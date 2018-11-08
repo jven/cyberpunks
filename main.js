@@ -15,6 +15,7 @@ function createFn() {
   game.physics.p2.gravity.y = 1000;
 
   climber = new cyberpunks.Climber(game);
+  climber.moveTo(300, 300);
 }
 
 function updateFn () {}
