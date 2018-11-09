@@ -111,8 +111,7 @@ cyberpunks.Climber = function(game, size) {
     this.rightUpperArm_
   ];
 
-  // Assemble the climber off screen.
-  this.moveEntireBodyTo(-10000, -10000);
+  this.enablePhysics_();
 };
 
 cyberpunks.Climber.prototype.moveEntireBodyTo = function(
@@ -209,7 +208,7 @@ cyberpunks.Climber.prototype.moveEntireBodyTo = function(
       -this.upperBody_.height / 2 + this.rightLowerArm_.height / 2);
 };
 
-cyberpunks.Climber.prototype.enablePhysics = function() {
+cyberpunks.Climber.prototype.enablePhysics_ = function() {
   this.game_.physics.p2.enable(this.bodyParts_, false);
 
   // Create the constraints between body parts.
@@ -287,8 +286,8 @@ cyberpunks.Climber.prototype.enablePhysics = function() {
 
 cyberpunks.Climber.prototype.moveBodyPartTo_ = function(
     bodyPart, anchorX, anchorY, offsetX, offsetY) {
-  bodyPart.x = anchorX + offsetX - bodyPart.width / 2;
-  bodyPart.y = anchorY + offsetY - bodyPart.height / 2;
+  bodyPart.body.x = anchorX + offsetX - bodyPart.width / 2;
+  bodyPart.body.y = anchorY + offsetY - bodyPart.height / 2;
 };
 
 cyberpunks.Climber.prototype.createBodyPart_ = function(

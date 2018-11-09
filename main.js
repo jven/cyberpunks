@@ -15,7 +15,6 @@ function createFn() {
 
   climber = new cyberpunks.Climber(game, 100 /* size */);
   climber.moveEntireBodyTo(300, 350);
-  climber.enablePhysics();
 }
 
 function updateFn() {}
