@@ -1,105 +1,145 @@
-cyberpunks.Climber = function(game) {
+cyberpunks.Climber = function(game, size) {
   this.game = game;
 
-  var scale = 100;
-  var shouldersDistance = 0.5 * scale,
-      upperArmLength = 0.4 * scale,
-      lowerArmLength = 0.4 * scale,
-      upperArmSize = 0.2 * scale,
-      lowerArmSize = 0.2 * scale,
-      handSize = 0.2 * scale,
-      footLength = 0.3 * scale,
-      footSize = 0.2 * scale,
-      neckLength = 0.1 * scale,
-      headSize = 0.5 * scale,
-      upperBodyLength = 0.6 * scale,
-      pelvisLength = 0.4 * scale,
-      upperLegLength = 0.5 * scale,
-      upperLegSize = 0.2 * scale,
-      lowerLegSize = 0.2 * scale,
-      lowerLegLength = 0.5 * scale;
+  var shoulderDistance = 0.5 * size;
+  var upperArmWidth = 0.4 * size;
+  var upperArmHeight = 0.2 * size;
+  var lowerArmWidth = 0.4 * size;
+  var lowerArmHeight = 0.2 * size;
+  var handSize = 0.2 * size;
+  var footLength = 0.3 * size;
+  var footSize = 0.2 * size;
+  var neckLength = 0.05 * size;
+  var headSize = 0.3 * size;
+  var upperBodyHeight = 0.6 * size;
+  var lowerBodyHeight = 0.4 * size;
+  var upperLegHeight = 0.5 * size;
+  var upperLegWidth = 0.2 * size;
+  var lowerLegWidth = 0.2 * size;
+  var lowerLegHeight = 0.5 * size;
 
-  // this.createBody('leftHand', 200, 200, handSize, handSize, 0xff0000);
-  // this.createBody('leftLowerArm', 200, 200, lowerArmLength, lowerArmSize, 0xff0000);
-  // this.createBody('leftUpperArm', 200, 200, upperArmLength, upperArmSize, 0xff0000);
-
-  // this.createBody('rightHand', 200, 200, 40, 10, 0xff0000);
-  // this.createBody('rightLowerArm', 200, 200, lowerArmLength, lowerArmSize, 0xff0000);
-  // this.createBody('rightUpperArm', 200, 200, upperArmLength, upperArmSize, 0xff0000);
+  this.upperBody = this.createBody(
+      'upperBody',
+      0,
+      0,
+      shoulderDistance,
+      upperBodyHeight,
+      this.randomColor_());
 
   this.bodies = [
-    this.createBody(
-        'upperBody', 
-        0, 
-        0,
-        shouldersDistance,
-        upperBodyLength,
-        0xff0000),
+    this.upperBody,
     
     this.createBody(
-        'pelvis', 
+        'lowerBody', 
         0, 
-        upperBodyLength / 2 + pelvisLength / 2, 
-        shouldersDistance, 
-        pelvisLength, 
-        0xff0000),
+        upperBodyHeight / 2 + lowerBodyHeight / 2, 
+        shoulderDistance, 
+        lowerBodyHeight, 
+        this.randomColor_()),
 
     this.createBody(
         'head', 
-        0, 
-        -upperBodyLength / 2 - headSize / 2 - neckLength, 
+        0,
+        -upperBodyHeight / 2 - headSize / 2 - neckLength, 
         headSize, 
         headSize, 
-        0xff0000),
+        this.randomColor_()),
     
     this.createBody(
         'leftUpperLeg', 
-        -shouldersDistance / 2, 
-        upperBodyLength / 2 + pelvisLength + upperLegLength / 2, 
-        upperLegSize, upperLegLength, 
-        0xff0000),
+        -shoulderDistance / 2, 
+        upperBodyHeight / 2 + lowerBodyHeight + upperLegHeight / 2, 
+        upperLegWidth, upperLegHeight, 
+        this.randomColor_()),
 
     this.createBody(
         'leftLowerLeg', 
-        -shouldersDistance / 2, 
-        upperBodyLength / 2 + pelvisLength + upperLegLength + lowerLegLength / 2, 
-        lowerLegSize, 
-        lowerLegLength, 
-        0xff0000),
+        -shoulderDistance / 2, 
+        upperBodyHeight / 2 + lowerBodyHeight + upperLegHeight + lowerLegHeight / 2, 
+        lowerLegWidth, 
+        lowerLegHeight, 
+        this.randomColor_()),
     
     this.createBody(
         'leftFoot', 
-        -shouldersDistance / 2 + upperLegSize / 2 - footLength / 2, 
-        upperBodyLength / 2 + pelvisLength + upperLegLength + lowerLegLength + footSize / 2, 
+        -shoulderDistance / 2 + upperLegWidth / 2 - footLength / 2, 
+        upperBodyHeight / 2 + lowerBodyHeight + upperLegHeight + lowerLegHeight + footSize / 2, 
         footLength, 
         footSize, 
-        0xff0000),
+        this.randomColor_()),
     
     this.createBody(
         'rightUpperLeg', 
-        shouldersDistance / 2, 
-        upperBodyLength / 2 + pelvisLength + upperLegLength / 2, 
-        upperLegSize, 
-        upperLegLength, 
-        0xff0000),
+        shoulderDistance / 2, 
+        upperBodyHeight / 2 + lowerBodyHeight + upperLegHeight / 2, 
+        upperLegWidth, 
+        upperLegHeight, 
+        this.randomColor_()),
     
     this.createBody(
         'rightLowerLeg', 
-        shouldersDistance / 2, 
-        upperBodyLength / 2 + pelvisLength + upperLegLength + lowerLegLength / 2, 
-        lowerLegSize, 
-        lowerLegLength,
-        0xff0000),
+        shoulderDistance / 2, 
+        upperBodyHeight / 2 + lowerBodyHeight + upperLegHeight + lowerLegHeight / 2, 
+        lowerLegWidth, 
+        lowerLegHeight,
+        this.randomColor_()),
 
     this.createBody(
         'rightFoot', 
-        -(-shouldersDistance / 2 + upperLegSize / 2 - footLength / 2), 
-        upperBodyLength / 2 + pelvisLength + upperLegLength + lowerLegLength + footSize / 2, 
+        -(-shoulderDistance / 2 + upperLegWidth / 2 - footLength / 2), 
+        upperBodyHeight / 2 + lowerBodyHeight + upperLegHeight + lowerLegHeight + footSize / 2, 
         footLength, 
         footSize, 
-        0xff0000)
+        this.randomColor_()),
+
+    this.createBody(
+        'leftHand', 
+        -shoulderDistance / 2 - upperArmWidth - lowerArmWidth - handSize / 2,
+        -upperBodyHeight / 2 + lowerArmHeight / 2, 
+        handSize, 
+        handSize, 
+        this.randomColor_()),
+
+    this.createBody(
+        'leftLowerArm', 
+        -shoulderDistance / 2 - upperArmWidth - lowerArmWidth / 2, 
+        -upperBodyHeight / 2 + lowerArmHeight / 2, 
+        lowerArmWidth, 
+        lowerArmHeight, 
+        this.randomColor_()),
+
+    this.createBody(
+        'leftUpperArm', 
+        -shoulderDistance / 2 - upperArmWidth / 2, 
+        -upperBodyHeight / 2 + lowerArmHeight / 2,
+        upperArmWidth, 
+        upperArmHeight, 
+        this.randomColor_()),
+
+    this.createBody(
+        'rightHand', 
+        -(-shoulderDistance / 2 - upperArmWidth - lowerArmWidth - handSize / 2),
+        -upperBodyHeight / 2 + lowerArmHeight / 2,
+        handSize, 
+        handSize, 
+        this.randomColor_()),
+
+    this.createBody(
+        'rightLowerArm', 
+        -(-shoulderDistance / 2 - upperArmWidth - lowerArmWidth / 2), 
+        -upperBodyHeight / 2 + lowerArmHeight / 2,
+        lowerArmWidth, 
+        lowerArmHeight, 
+        this.randomColor_()),
+
+    this.createBody(
+        'rightUpperArm', 
+        -(-shoulderDistance / 2 - upperArmWidth / 2), 
+        -upperBodyHeight / 2 + lowerArmHeight / 2,
+        upperArmWidth, 
+        upperArmHeight, 
+        this.randomColor_())
   ];
-  this.upperBody = this.bodies[0];
 };
 
 cyberpunks.Climber.prototype.moveTo = function(x, y) {
@@ -113,8 +153,10 @@ cyberpunks.Climber.prototype.moveTo = function(x, y) {
 };
 
 cyberpunks.Climber.prototype.createBody = function(
-    name, x, y, width, height, fillColor) {
-  var graphics = this.game.add.graphics(x - 10000, y - 10000);
+    name, centerX, centerY, width, height, fillColor) {
+  var topLeftX = centerX - width / 2;
+  var topLeftY = centerY - height / 2;
+  var graphics = this.game.add.graphics(topLeftX - 10000, topLeftY - 10000);
   graphics.beginFill(fillColor);
   graphics.drawRect(0, 0, width, height);
   graphics.endFill();
@@ -129,7 +171,13 @@ cyberpunks.Climber.prototype.createBody = function(
       0,
       0);
   
-  var body = game.add.sprite(x, y, name);
-  game.physics.p2.enable([body], false);
+  var body = game.add.sprite(topLeftX, topLeftY, name);
+  // game.physics.p2.enable([body], false);
   return body;
+};
+
+cyberpunks.Climber.prototype.randomColor_ = function() {
+  return ((Math.random() * 3000 + 1096) << 24) +
+      ((Math.random() * 3000 + 1096) << 12) +
+      (Math.random() * 3000 + 1096);
 };

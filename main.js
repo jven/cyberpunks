@@ -8,13 +8,14 @@ var game = new Phaser.Game(
       update: updateFn
     });
 var climber;
-var x = 3;
 
 function createFn() {
   game.physics.startSystem(Phaser.Physics.P2JS);
   game.physics.p2.gravity.y = 1000;
 
-  climber = new cyberpunks.Climber(game);
+  climber = new cyberpunks.Climber(
+      game, 
+      100 /* size */);
   climber.moveTo(300, 300);
 }
 
