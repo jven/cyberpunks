@@ -21,108 +21,78 @@ cyberpunks.Climber = function(game, size) {
   // Create the body parts.
   this.upperBody_ = this.createBodyPart_(
       'upperBody',
-      0,
-      0,
       shoulderDistance,
       upperBodyHeight,
       this.randomColor_());
   this.lowerBody_ = this.createBodyPart_(
-        'lowerBody', 
-        0, 
-        upperBodyHeight / 2 + lowerBodyHeight / 2, 
-        shoulderDistance, 
-        lowerBodyHeight, 
-        this.randomColor_());
+      'lowerBody',
+      shoulderDistance, 
+      lowerBodyHeight, 
+      this.randomColor_());
   this.head_ = this.createBodyPart_(
-        'head', 
-        0,
-        -upperBodyHeight / 2 - headSize / 2 - neckLength, 
-        headSize, 
-        headSize, 
-        this.randomColor_());
+      'head',
+      headSize, 
+      headSize, 
+      this.randomColor_());
   this.leftUpperLeg_ = this.createBodyPart_(
-        'leftUpperLeg', 
-        -shoulderDistance / 2, 
-        upperBodyHeight / 2 + lowerBodyHeight + upperLegHeight / 2, 
-        upperLegWidth, upperLegHeight, 
-        this.randomColor_());
+      'leftUpperLeg',
+      upperLegWidth, upperLegHeight, 
+      this.randomColor_());
   this.leftLowerLeg_ = this.createBodyPart_(
-        'leftLowerLeg', 
-        -shoulderDistance / 2, 
-        upperBodyHeight / 2 + lowerBodyHeight + upperLegHeight + lowerLegHeight / 2, 
-        lowerLegWidth, 
-        lowerLegHeight, 
-        this.randomColor_());
+      'leftLowerLeg',
+      lowerLegWidth, 
+      lowerLegHeight, 
+      this.randomColor_());
   this.leftFoot_ = this.createBodyPart_(
-        'leftFoot', 
-        -shoulderDistance / 2 + upperLegWidth / 2 - footWidth / 2, 
-        upperBodyHeight / 2 + lowerBodyHeight + upperLegHeight + lowerLegHeight + footHeight / 2, 
-        footWidth, 
-        footHeight, 
-        this.randomColor_());
+      'leftFoot',
+      footWidth, 
+      footHeight, 
+      this.randomColor_());
   this.rightUpperLeg_ = this.createBodyPart_(
-        'rightUpperLeg', 
-        shoulderDistance / 2, 
-        upperBodyHeight / 2 + lowerBodyHeight + upperLegHeight / 2, 
-        upperLegWidth, 
-        upperLegHeight, 
-        this.randomColor_());
+      'rightUpperLeg',
+      upperLegWidth, 
+      upperLegHeight, 
+      this.randomColor_());
   this.rightLowerLeg_ = this.createBodyPart_(
-        'rightLowerLeg', 
-        shoulderDistance / 2, 
-        upperBodyHeight / 2 + lowerBodyHeight + upperLegHeight + lowerLegHeight / 2, 
-        lowerLegWidth, 
-        lowerLegHeight,
-        this.randomColor_());
+      'rightLowerLeg',
+      lowerLegWidth, 
+      lowerLegHeight,
+      this.randomColor_());
   this.rightFoot_ = this.createBodyPart_(
-        'rightFoot', 
-        -(-shoulderDistance / 2 + upperLegWidth / 2 - footWidth / 2), 
-        upperBodyHeight / 2 + lowerBodyHeight + upperLegHeight + lowerLegHeight + footHeight / 2, 
-        footWidth, 
-        footHeight, 
-        this.randomColor_());
+      'rightFoot', 
+      footWidth, 
+      footHeight, 
+      this.randomColor_());
   this.leftHand_ = this.createBodyPart_(
-        'leftHand', 
-        -shoulderDistance / 2 - upperArmWidth - lowerArmWidth - handSize / 2,
-        -upperBodyHeight / 2 + lowerArmHeight / 2, 
-        handSize, 
-        handSize, 
-        this.randomColor_());
+      'leftHand',
+      handSize, 
+      handSize, 
+      this.randomColor_());
   this.leftLowerArm_ = this.createBodyPart_(
-        'leftLowerArm', 
-        -shoulderDistance / 2 - upperArmWidth - lowerArmWidth / 2, 
-        -upperBodyHeight / 2 + lowerArmHeight / 2, 
-        lowerArmWidth, 
-        lowerArmHeight, 
-        this.randomColor_());
+      'leftLowerArm',
+      lowerArmWidth, 
+      lowerArmHeight, 
+      this.randomColor_());
   this.leftUpperArm_ = this.createBodyPart_(
-        'leftUpperArm', 
-        -shoulderDistance / 2 - upperArmWidth / 2, 
-        -upperBodyHeight / 2 + lowerArmHeight / 2,
-        upperArmWidth, 
-        upperArmHeight, 
-        this.randomColor_());
+      'leftUpperArm',
+      upperArmWidth, 
+      upperArmHeight, 
+      this.randomColor_());
   this.rightHand_ = this.createBodyPart_(
-        'rightHand', 
-        -(-shoulderDistance / 2 - upperArmWidth - lowerArmWidth - handSize / 2),
-        -upperBodyHeight / 2 + lowerArmHeight / 2,
-        handSize, 
-        handSize, 
-        this.randomColor_());
+      'rightHand',
+      handSize, 
+      handSize, 
+      this.randomColor_());
   this.rightLowerArm_ = this.createBodyPart_(
-        'rightLowerArm', 
-        -(-shoulderDistance / 2 - upperArmWidth - lowerArmWidth / 2), 
-        -upperBodyHeight / 2 + lowerArmHeight / 2,
-        lowerArmWidth, 
-        lowerArmHeight, 
-        this.randomColor_());
+      'rightLowerArm',
+      lowerArmWidth, 
+      lowerArmHeight, 
+      this.randomColor_());
   this.rightUpperArm_ = this.createBodyPart_(
-        'rightUpperArm', 
-        -(-shoulderDistance / 2 - upperArmWidth / 2), 
-        -upperBodyHeight / 2 + lowerArmHeight / 2,
-        upperArmWidth, 
-        upperArmHeight, 
-        this.randomColor_());
+      'rightUpperArm',
+      upperArmWidth, 
+      upperArmHeight, 
+      this.randomColor_());
   this.bodyParts_ = [
     this.head_,
     this.upperBody_,
@@ -141,95 +111,191 @@ cyberpunks.Climber = function(game, size) {
     this.rightUpperArm_
   ];
 
+  // Assemble the climber off screen.
+  this.moveEntireBodyTo(-10000, -10000);
+};
+
+cyberpunks.Climber.prototype.moveEntireBodyTo = function(
+    climberCenterX, climberCenterY) {
+  this.moveBodyPartTo_(
+      this.upperBody_,
+      climberCenterX,
+      climberCenterY,
+      0,
+      0);
+  this.moveBodyPartTo_(
+      this.lowerBody_,
+      climberCenterX,
+      climberCenterY,
+      0,
+      this.upperBody_.height / 2 + this.lowerBody_.height / 2);
+  this.moveBodyPartTo_(
+      this.head_,
+      climberCenterX,
+      climberCenterY,
+      0,
+      -this.upperBody_.height / 2 - this.head_.height / 2);
+  this.moveBodyPartTo_(
+      this.leftUpperLeg_,
+      climberCenterX,
+      climberCenterY, 
+      -this.lowerBody_.width / 2, 
+      this.upperBody_.height / 2 + this.lowerBody_.height + this.leftUpperLeg_.height / 2);
+  this.moveBodyPartTo_(
+      this.leftLowerLeg_,
+      climberCenterX,
+      climberCenterY, 
+      -this.lowerBody_.width / 2, 
+      this.upperBody_.height / 2 + this.lowerBody_.height + this.leftUpperLeg_.height + this.leftLowerLeg_.height / 2);
+  this.moveBodyPartTo_(
+      this.leftFoot_,
+      climberCenterX,
+      climberCenterY,
+      -this.lowerBody_.width / 2 + this.leftUpperLeg_.width / 2 - this.leftFoot_.width / 2, 
+      this.upperBody_.height / 2 + this.lowerBody_.height + this.leftUpperLeg_.height + this.leftLowerLeg_.height + this.leftFoot_.height / 2);
+  this.moveBodyPartTo_(
+      this.rightUpperLeg_,
+      climberCenterX,
+      climberCenterY,
+      this.lowerBody_.width / 2, 
+      this.upperBody_.height / 2 + this.lowerBody_.height + this.rightUpperLeg_.height / 2);
+  this.moveBodyPartTo_(
+      this.rightLowerLeg_,
+      climberCenterX,
+      climberCenterY,
+      this.lowerBody_.width / 2, 
+      this.upperBody_.height / 2 + this.lowerBody_.height + this.rightUpperLeg_.height + this.rightLowerLeg_.height / 2);
+  this.moveBodyPartTo_(
+      this.rightFoot_,
+      climberCenterX,
+      climberCenterY,
+      this.lowerBody_.width / 2 - this.rightUpperLeg_.width / 2 + this.rightFoot_.width / 2, 
+      this.upperBody_.height / 2 + this.lowerBody_.height + this.rightUpperLeg_.height + this.rightLowerLeg_.height + this.rightFoot_.height / 2);
+  this.moveBodyPartTo_(
+      this.leftHand_,
+      climberCenterX,
+      climberCenterY,
+      -this.upperBody_.width / 2 - this.leftUpperArm_.width - this.leftLowerArm_.width - this.leftHand_.width / 2, 
+      -this.upperBody_.height / 2 + this.leftLowerArm_.height / 2);
+  this.moveBodyPartTo_(
+      this.leftLowerArm_,
+      climberCenterX,
+      climberCenterY,
+      -this.upperBody_.width / 2 - this.leftUpperArm_.width - this.leftLowerArm_.width / 2, 
+      -this.upperBody_.height / 2 + this.leftLowerArm_.height / 2);
+  this.moveBodyPartTo_(
+      this.leftUpperArm_,
+      climberCenterX,
+      climberCenterY,
+      -this.upperBody_.width / 2 - this.leftUpperArm_.width / 2, 
+      -this.upperBody_.height / 2 + this.leftLowerArm_.height / 2);
+  this.moveBodyPartTo_(
+      this.rightHand_,
+      climberCenterX,
+      climberCenterY,
+      this.upperBody_.width / 2 + this.rightUpperArm_.width + this.rightLowerArm_.width + this.rightHand_.width / 2, 
+      -this.upperBody_.height / 2 + this.rightLowerArm_.height / 2);
+  this.moveBodyPartTo_(
+      this.rightLowerArm_,
+      climberCenterX,
+      climberCenterY,
+      this.upperBody_.width / 2 + this.rightUpperArm_.width + this.rightLowerArm_.width / 2, 
+      -this.upperBody_.height / 2 + this.rightLowerArm_.height / 2);
+  this.moveBodyPartTo_(
+      this.rightUpperArm_,
+      climberCenterX,
+      climberCenterY,
+      this.upperBody_.width / 2 + this.rightUpperArm_.width / 2, 
+      -this.upperBody_.height / 2 + this.rightLowerArm_.height / 2);
+};
+
+cyberpunks.Climber.prototype.enablePhysics = function() {
+  this.game_.physics.p2.enable(this.bodyParts_, false);
+
   // Create the constraints between body parts.
   this.game_.physics.p2.createRevoluteConstraint(
       this.head_,
-      [0, headSize / 2],
+      [0, this.head_.height / 2],
       this.upperBody_,
-      [0, -upperBodyHeight / 2]);
+      [0, -this.upperBody_.height / 2]);
   this.game_.physics.p2.createRevoluteConstraint(
       this.upperBody_,
-      [0, upperBodyHeight / 2],
+      [0, this.upperBody_.height / 2],
       this.lowerBody_,
-      [0, -lowerBodyHeight / 2]);
+      [0, -this.lowerBody_.height / 2]);
   this.game_.physics.p2.createRevoluteConstraint(
       this.lowerBody_,
-      [-shoulderDistance / 2, lowerBodyHeight / 2],
+      [-this.lowerBody_.width / 2, this.lowerBody_.height / 2],
       this.leftUpperLeg_,
-      [0, -upperLegHeight / 2]);
+      [0, -this.leftUpperLeg_.height / 2]);
   this.game_.physics.p2.createRevoluteConstraint(
       this.lowerBody_,
-      [shoulderDistance / 2, lowerBodyHeight / 2],
+      [this.lowerBody_.width / 2, this.lowerBody_.height / 2],
       this.rightUpperLeg_,
-      [0, -upperLegHeight / 2]);
+      [0, -this.rightUpperLeg_.height / 2]);
   this.game_.physics.p2.createRevoluteConstraint(
       this.leftUpperLeg_,
-      [0, upperLegHeight / 2],
+      [0, this.leftUpperLeg_.height / 2],
       this.leftLowerLeg_,
-      [0, -lowerLegHeight / 2]);
+      [0, -this.leftLowerLeg_.height / 2]);
   this.game_.physics.p2.createRevoluteConstraint(
       this.rightUpperLeg_,
-      [0, upperLegHeight / 2],
+      [0, this.rightUpperLeg_.height / 2],
       this.rightLowerLeg_,
-      [0, -lowerLegHeight / 2]);
+      [0, -this.rightLowerLeg_.height / 2]);
   this.game_.physics.p2.createRevoluteConstraint(
       this.leftLowerLeg_,
-      [0, lowerLegHeight / 2],
+      [0, this.leftLowerLeg_.height / 2],
       this.leftFoot_,
-      [footWidth / 2 - lowerLegWidth / 2, -footHeight / 2]);
+      [this.leftFoot_.width / 2 - this.leftLowerLeg_.width / 2, -this.leftFoot_.height / 2]);
   this.game_.physics.p2.createRevoluteConstraint(
       this.rightLowerLeg_,
-      [0, lowerLegHeight / 2],
+      [0, this.rightLowerLeg_.height / 2],
       this.rightFoot_,
-      [-(footWidth / 2 - lowerLegWidth / 2), -footHeight / 2]);
+      [-this.rightFoot_.width / 2 + this.rightLowerLeg_.width / 2, -this.rightFoot_.height / 2]);
   this.game_.physics.p2.createRevoluteConstraint(
       this.upperBody_,
-      [-shoulderDistance / 2, -upperBodyHeight / 2 + upperArmHeight / 2],
+      [-this.upperBody_.width / 2, -this.upperBody_.height / 2 + this.leftUpperArm_.height / 2],
       this.leftUpperArm_,
-      [upperArmWidth / 2, 0]);
+      [this.leftUpperArm_.width / 2, 0]);
   this.game_.physics.p2.createRevoluteConstraint(
       this.upperBody_,
-      [shoulderDistance / 2, -upperBodyHeight / 2 + upperArmHeight / 2],
+      [this.upperBody_.width / 2, -this.upperBody_.height / 2 + this.rightUpperArm_.height / 2],
       this.rightUpperArm_,
-      [-upperArmWidth / 2, 0]);
+      [-this.rightUpperArm_.width / 2, 0]);
   this.game_.physics.p2.createRevoluteConstraint(
       this.leftLowerArm_,
-      [lowerArmWidth / 2, 0],
+      [this.leftLowerArm_.width / 2, 0],
       this.leftUpperArm_,
-      [-upperArmWidth / 2, 0]);
+      [-this.leftUpperArm_.width / 2, 0]);
   this.game_.physics.p2.createRevoluteConstraint(
       this.rightLowerArm_,
-      [-lowerArmWidth / 2, 0],
+      [-this.rightLowerArm_.width / 2, 0],
       this.rightUpperArm_,
-      [upperArmWidth / 2, 0]);
+      [this.rightUpperArm_.width / 2, 0]);
   this.game_.physics.p2.createRevoluteConstraint(
       this.leftHand_,
-      [handSize / 2, 0],
+      [this.leftHand_.width / 2, 0],
       this.leftLowerArm_,
-      [-lowerArmWidth / 2, 0]);
+      [-this.leftLowerArm_.width / 2, 0]);
   this.game_.physics.p2.createRevoluteConstraint(
       this.rightHand_,
-      [-handSize / 2, 0],
+      [-this.rightHand_.width / 2, 0],
       this.rightLowerArm_,
-      [lowerArmWidth / 2, 0]);
-};
+      [this.rightLowerArm_.width / 2, 0]);
+}
 
-cyberpunks.Climber.prototype.moveTo = function(x, y) {
-  var translateX = x - this.upperBody_.x;
-  var translateY = y - this.upperBody_.y;
-
-  this.bodyParts_.forEach(body => {
-    body.x += translateX;
-    body.y += translateY;
-  });
+cyberpunks.Climber.prototype.moveBodyPartTo_ = function(
+    bodyPart, anchorX, anchorY, offsetX, offsetY) {
+  bodyPart.x = anchorX + offsetX - bodyPart.width / 2;
+  bodyPart.y = anchorY + offsetY - bodyPart.height / 2;
 };
 
 cyberpunks.Climber.prototype.createBodyPart_ = function(
-    name, centerX, centerY, width, height, fillColor) {
-  var topLeftX = centerX - width / 2;
-  var topLeftY = centerY - height / 2;
-  // Draw the body part graphic off screen.
-  var graphics = this.game_.add.graphics(topLeftX - 10000, topLeftY - 10000);
+    name, width, height, fillColor) {
+  // Draw the body part graphic off screen. We draw this just to produce the
+  // sprite which will actually be rendered on screen.
+  var graphics = this.game_.add.graphics(-10000, -10000);
   graphics.beginFill(fillColor);
   graphics.drawRect(0, 0, width, height);
   graphics.endFill();
@@ -245,10 +311,8 @@ cyberpunks.Climber.prototype.createBodyPart_ = function(
       0,
       0);
   
-  var bodyPart = this.game_.add.sprite(topLeftX, topLeftY, name);
-  // Add physics to the body part.
-  this.game_.physics.p2.enable([bodyPart], false);
-  return bodyPart;
+  // Add the sprite off screen. It will be positioned on screen later.
+  return this.game_.add.sprite(-10000, -10000, name);
 };
 
 cyberpunks.Climber.prototype.randomColor_ = function() {
