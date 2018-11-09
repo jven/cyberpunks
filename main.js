@@ -9,6 +9,7 @@ var game = new Phaser.Game(
       update: updateFn
     });
 var climber;
+var course;
 
 function preloadFn() {
   game.load.image('background', 'bg.png');
@@ -23,6 +24,8 @@ function createFn() {
 
   climber = new cyberpunks.Climber(game, 100 /* size */);
   climber.moveEntireBodyTo(300, 350);
+
+  course = new cyberpunks.Course(game);
 
   game.input.onDown.add(onMouseDown, this);
 
