@@ -16,8 +16,8 @@ function preloadFn() {
 };
 
 function createFn() {
-  game.add.tileSprite(0, 0, 800, 600, 'background');
-  game.world.setBounds(0, 0, 800, 600);
+  game.add.tileSprite(0, 0, 1000, 900, 'background');
+  game.world.setBounds(0, 0, 1000, 900);
 
   game.physics.startSystem(Phaser.Physics.P2JS);
   game.physics.p2.gravity.y = 1000;
@@ -30,6 +30,8 @@ function createFn() {
   game.input.onDown.add(onMouseDown, this);
 
   game.camera.follow(climber.upperBody_);
+  game.camera.scale.x = 0.5;
+  game.camera.scale.y = 0.5;
 }
 
 function updateFn() {}
