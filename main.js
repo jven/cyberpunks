@@ -43,7 +43,15 @@ function createFn() {
   game.camera.scale.y = 1;
 }
 
-function updateFn() {}
+function updateFn() {
+//console.log(game.physics.p2)
+climber.leftHand_.body.setZeroVelocity();
+//    climber.leftHand_.body.static=true;
+    climber.leftHand_.body.x=game.input.mousePointer.x;
+    climber.leftHand_.body.y=game.input.mousePointer.y;
+
+
+}
 
 function onMouseDown(pointer) {
   var clickedBodyParts = game.physics.p2.hitTest(
