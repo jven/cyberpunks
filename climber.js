@@ -316,7 +316,6 @@ cyberpunks.Climber.prototype.createBodyPart_ = function(
 };
 
 cyberpunks.Climber.prototype.randomColor_ = function() {
-  return ((Math.random() * 3000 + 1096) << 24) +
-      ((Math.random() * 3000 + 1096) << 12) +
-      (Math.random() * 3000 + 1096);
+  var randomValue = Math.floor(Math.random() * 156) + 100;
+  return (randomValue << 16) + (randomValue << 8) + randomValue;
 };
