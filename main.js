@@ -8,6 +8,7 @@ var game = new Phaser.Game(
       update: updateFn
     });
 var climber;
+var course;
 
 function createFn() {
   game.physics.startSystem(Phaser.Physics.P2JS);
@@ -15,6 +16,8 @@ function createFn() {
 
   climber = new cyberpunks.Climber(game, 100 /* size */);
   climber.moveEntireBodyTo(300, 350);
+
+  course = new cyberpunks.Course(game);
 
   game.input.onDown.add(onMouseDown, this);
 }
