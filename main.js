@@ -11,6 +11,8 @@ var game = new Phaser.Game(
 var climber;
 var course;
 var scale=.5;
+var selectedBodyPart;
+
 function preloadFn() {
   game.load.image('background', 'bg.png');
   game.load.image('head', 'sprites/head.png');
@@ -36,41 +38,39 @@ function createFn() {
 
   course = new cyberpunks.Course(game);
 
- // game.input.onDown.add(onMouseDown, this);
-
   game.camera.follow(climber.upperBody_);
 
   game.camera.scale.x = scale;
   game.camera.scale.y = scale;
 
-  game.input.addMoveCallback(move, this);
-
+  game.input.onDown.add(click, this);
+  game.input.onUp.add(release, this);
 }
 
 function updateFn() {
-//console.log(game.physics.p2)
-climber.leftHand_.body.setZeroVelocity();
-//    climber.leftHand_.body.static=true;
-    //climber.leftHand_.body.x=game.input.mousePointer.x;
-    climber.leftHand_.body.x=game.input.activePointer.worldX/scale;
-    climber.leftHand_.body.y=game.input.activePointer.worldY/scale;
-
-
+  if(selectedBodyPart) {
+    selectedBodyPart.setZeroVelocity();
+    selectedBodyPart.x=game.input.activePointer.worldX/scale;
+    selectedBodyPart.y=game.input.activePointer.worldY/scale;
+  }
 }
 
-
-function move(pointer) {
- var physicsPos = [game.physics.p2.pxmi(pointer.position.x), game.physics.p2.pxmi(pointer.position.y)];
-    // p2 uses different coordinate system, so convert the pointer position to p2's coordinate system
-  //  climber.leftHand_.body.x = physicsPos[0];
- //   climber.leftHand_.body.y = physicsPos[1];
-
+function release() {
+  selectedBodyPart = false;
 }
 
+function click(pointer) {
 
-function onMouseDown(pointer) {
+  let mousePosition = {
+    'x': game.input.activePointer.worldX/scale,
+    'y': game.input.activePointer.worldY/scale
+  };
+
   var clickedBodyParts = game.physics.p2.hitTest(
-      pointer.position,
+      mousePosition,
       climber.getSelectableBodyParts());
-  console.log(clickedBodyParts);
+
+  if(clickedBodyParts.length) {
+    selectedBodyPart = clickedBodyParts[0].parent;
+  }
 }
