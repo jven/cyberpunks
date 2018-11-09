@@ -21,78 +21,79 @@ cyberpunks.Climber = function(game, size) {
   // Create the body parts.
   this.upperBody_ = this.createBodyPart_(
       'upperBody',
+      'upperBody',
       shoulderDistance,
-      upperBodyHeight,
-      this.randomColor_());
+      upperBodyHeight);
   this.lowerBody_ = this.createBodyPart_(
       'lowerBody',
+      'lowerBody',
       shoulderDistance, 
-      lowerBodyHeight, 
-      this.randomColor_());
+      lowerBodyHeight);
   this.head_ = this.createBodyPart_(
       'head',
+      'head',
       headSize, 
-      headSize, 
-      this.randomColor_());
+      headSize);
   this.leftUpperLeg_ = this.createBodyPart_(
       'leftUpperLeg',
-      upperLegWidth, upperLegHeight, 
-      this.randomColor_());
+      'upperLeg',
+      upperLegWidth,
+      upperLegHeight);
   this.leftLowerLeg_ = this.createBodyPart_(
       'leftLowerLeg',
+      'lowerLeg',
       lowerLegWidth, 
-      lowerLegHeight, 
-      this.randomColor_());
+      lowerLegHeight);
   this.leftFoot_ = this.createBodyPart_(
       'leftFoot',
+      'foot',
       footWidth, 
-      footHeight, 
-      this.randomColor_());
+      footHeight);
   this.rightUpperLeg_ = this.createBodyPart_(
       'rightUpperLeg',
+      'upperLeg',
       upperLegWidth, 
-      upperLegHeight, 
-      this.randomColor_());
+      upperLegHeight);
   this.rightLowerLeg_ = this.createBodyPart_(
       'rightLowerLeg',
+      'lowerLeg',
       lowerLegWidth, 
-      lowerLegHeight,
-      this.randomColor_());
+      lowerLegHeight);
   this.rightFoot_ = this.createBodyPart_(
-      'rightFoot', 
+      'rightFoot',
+      'foot',
       footWidth, 
-      footHeight, 
-      this.randomColor_());
+      footHeight);
   this.leftHand_ = this.createBodyPart_(
       'leftHand',
+      'hand',
       handSize, 
-      handSize, 
-      this.randomColor_());
+      handSize);
   this.leftLowerArm_ = this.createBodyPart_(
       'leftLowerArm',
+      'lowerArm',
       lowerArmWidth, 
-      lowerArmHeight, 
-      this.randomColor_());
+      lowerArmHeight);
   this.leftUpperArm_ = this.createBodyPart_(
       'leftUpperArm',
+      'upperArm',
       upperArmWidth, 
-      upperArmHeight, 
-      this.randomColor_());
+      upperArmHeight);
   this.rightHand_ = this.createBodyPart_(
       'rightHand',
+      'hand',
       handSize, 
-      handSize, 
-      this.randomColor_());
+      handSize);
   this.rightLowerArm_ = this.createBodyPart_(
       'rightLowerArm',
+      'lowerArm',
       lowerArmWidth, 
-      lowerArmHeight, 
-      this.randomColor_());
+      lowerArmHeight);
   this.rightUpperArm_ = this.createBodyPart_(
       'rightUpperArm',
+      'upperArm',
       upperArmWidth, 
-      upperArmHeight, 
-      this.randomColor_());
+      upperArmHeight);
   this.bodyParts_ = [
     this.head_,
     this.upperBody_,
@@ -314,11 +315,19 @@ cyberpunks.Climber.prototype.moveBodyPartTo_ = function(
 };
 
 cyberpunks.Climber.prototype.createBodyPart_ = function(
-    name, width, height, fillColor) {
+    name, imageName, width, height) {
+  if (cyberpunks.Config.USE_SKELETON_SPRITE) {
+    // Add the sprite off screen. It will be positioned on screen later.
+    var skeletonSprite = this.game_.add.sprite(-10000, -10000, imageName);
+    skeletonSprite.width = width;
+    skeletonSprite.height = height;
+    return skeletonSprite;
+  }
+
   // Draw the body part graphic off screen. We draw this just to produce the
   // sprite which will actually be rendered on screen.
   var graphics = this.game_.add.graphics(-10000, -10000);
-  graphics.beginFill(fillColor);
+  graphics.beginFill(this.randomColor_());
   graphics.drawRect(0, 0, width, height);
   graphics.endFill();
   // Create a texture and sprite based on the graphic and add it to the game.
