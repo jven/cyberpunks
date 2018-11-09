@@ -1,5 +1,5 @@
 var game = new Phaser.Game(
-    400 /* width */,
+    800 /* width */,
     600 /* height */,
     Phaser.AUTO,
     '',
@@ -16,8 +16,8 @@ function preloadFn() {
 };
 
 function createFn() {
-  game.add.tileSprite(0, 0, 1920, 1920, 'background');
-  game.world.setBounds(0, 0, 1920, 1920);
+  game.add.tileSprite(0, 0, 800, 600, 'background');
+  game.world.setBounds(0, 0, 800, 600);
 
   game.physics.startSystem(Phaser.Physics.P2JS);
   game.physics.p2.gravity.y = 1000;
