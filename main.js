@@ -15,6 +15,15 @@ function createFn() {
 
   climber = new cyberpunks.Climber(game, 100 /* size */);
   climber.moveEntireBodyTo(300, 350);
+
+  game.input.onDown.add(onMouseDown, this);
 }
 
 function updateFn() {}
+
+function onMouseDown(pointer) {
+  var clickedBodyParts = game.physics.p2.hitTest(
+      pointer.position,
+      climber.getSelectableBodyParts());
+  console.log(clickedBodyParts);
+}

@@ -114,6 +114,15 @@ cyberpunks.Climber = function(game, size) {
   this.enablePhysics_();
 };
 
+cyberpunks.Climber.prototype.getSelectableBodyParts = function() {
+  return [
+    this.leftHand_.body,
+    this.rightHand_.body,
+    this.leftFoot_.body,
+    this.rightFoot_.body
+  ];
+};
+
 cyberpunks.Climber.prototype.moveEntireBodyTo = function(
     climberCenterX, climberCenterY) {
   this.moveBodyPartTo_(
