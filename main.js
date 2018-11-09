@@ -19,4 +19,4 @@ function createFn() {
   climber.moveTo(300, 300);
 }
 
-function updateFn () {}
+function updateFn() {}
