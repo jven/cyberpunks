@@ -13,6 +13,15 @@ var course;
 
 function preloadFn() {
   game.load.image('background', 'bg.png');
+  game.load.image('head', 'sprites/head.png');
+  game.load.image('upperBody', 'sprites/upperBody.png');
+  game.load.image('lowerBody', 'sprites/lowerBody.png');
+  game.load.image('hand', 'sprites/hand.png');
+  game.load.image('lowerArm', 'sprites/lowerArm.png');
+  game.load.image('upperArm', 'sprites/upperArm.png');
+  game.load.image('foot', 'sprites/foot.png');
+  game.load.image('lowerLeg', 'sprites/lowerLeg.png');
+  game.load.image('upperLeg', 'sprites/upperLeg.png');
 };
 
 function createFn() {
@@ -30,8 +39,8 @@ function createFn() {
   game.input.onDown.add(onMouseDown, this);
 
   game.camera.follow(climber.upperBody_);
-  game.camera.scale.x = 0.5;
-  game.camera.scale.y = 0.5;
+  game.camera.scale.x = 1;
+  game.camera.scale.y = 1;
 }
 
 function updateFn() {}
