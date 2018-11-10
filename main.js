@@ -50,19 +50,31 @@ function createFn() {
 
 function updateFn() {
   if(selectedBodyPart) {
+    selectedBodyPart.holdingOn=false;
     selectedBodyPart.setZeroVelocity();
     selectedBodyPart.x=game.input.activePointer.worldX/scale;
     selectedBodyPart.y=game.input.activePointer.worldY/scale;
   }
   climber.getSelectableBodyParts().forEach(bodyPart=>{
     if (bodyPart.holdingOn){
-      bodyPart.static = true;
+      bodyPart.motionState = Phaser.Physics.P2.Body.KINEMATIC;
+      bodyPart.setZeroVelocity();
+      bodyPart.setZeroRotation();
+
     }
     else{    
-      bodyPart.static = false;
+      bodyPart.motionState = Phaser.Physics.P2.Body.DYNAMIC;
     }
   })
 }
+
+
+//motionState : number
+//The type of motion this body has. Should be one of: Body.STATIC (the body does not move), Body.DYNAMIC (body can move and respond to collisions) and Body.KINEMATIC (only moves according to its .velocity).
+
+
+
+
 
 function release() {
   if (!selectedBodyPart) return;
