@@ -13,6 +13,7 @@ var course;
 var scale=.5;
 var selectedBodyPart;
 
+
 function preloadFn() {
   game.load.image('background', 'bg.png');
   game.load.image('head', 'sprites/head.png');
@@ -53,10 +54,33 @@ function updateFn() {
     selectedBodyPart.x=game.input.activePointer.worldX/scale;
     selectedBodyPart.y=game.input.activePointer.worldY/scale;
   }
+  climber.getSelectableBodyParts().forEach(bodyPart=>{
+    if (bodyPart.holdingOn){
+      bodyPart.static = true;
+    }
+    else{    
+      bodyPart.static = false;
+    }
+  })
 }
 
 function release() {
-  selectedBodyPart = false;
+  if (!selectedBodyPart) return;
+
+  var holdingOnBodyPart=game.physics.p2.hitTest(
+    selectedBodyPart,
+    course.holdsArray);
+
+  if (holdingOnBodyPart.length){
+    console.log('holding on')
+    selectedBodyPart.holdingOn=true;
+  }
+  else {
+    console.log('in else');
+    selectedBodyPart.holdingOn=false;
+  }
+
+  selectedBodyPart = null;
 }
 
 function click(pointer) {

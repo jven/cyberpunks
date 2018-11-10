@@ -111,7 +111,7 @@ cyberpunks.Climber = function(game, size) {
     this.rightLowerArm_,
     this.rightUpperArm_
   ];
-
+    
   this.enablePhysics_();
 };
 
