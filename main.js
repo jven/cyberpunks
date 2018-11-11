@@ -46,24 +46,33 @@ function createFn() {
 
   game.input.onDown.add(click, this);
   game.input.onUp.add(release, this);
+  game.input.addMoveCallback(move, this);
+
 }
 
 function updateFn() {
+
+
+  game.debug.text('y force on right hand'+climber.getForceOnBodyPart(climber.rightHand_.body), 32, 32);
+  game.debug.text('y force on left hand'+climber.getForceOnBodyPart(climber.leftHand_.body), 32, 48);
+  game.debug.text('y force on right foot'+climber.getForceOnBodyPart(climber.rightFoot_.body), 32, 64);
+  game.debug.text('y force on left foot'+climber.getForceOnBodyPart(climber.leftFoot_.body), 32, 78);
+
+
+  //drag with mouse
   if(selectedBodyPart) {
     selectedBodyPart.holdingOn=false;
     selectedBodyPart.setZeroVelocity();
     selectedBodyPart.x=game.input.activePointer.worldX/scale;
     selectedBodyPart.y=game.input.activePointer.worldY/scale;
   }
+
+  //fix each limb if holding on
   climber.getSelectableBodyParts().forEach(bodyPart=>{
     if (bodyPart.holdingOn){
-      bodyPart.motionState = Phaser.Physics.P2.Body.KINEMATIC;
       bodyPart.setZeroVelocity();
-      bodyPart.setZeroRotation();
-
-    }
-    else{    
-      bodyPart.motionState = Phaser.Physics.P2.Body.DYNAMIC;
+      bodyPart.x=bodyPart.staticPositionX;
+      bodyPart.y=bodyPart.staticPositionY;
     }
   })
 }
@@ -71,32 +80,12 @@ function updateFn() {
 
 //motionState : number
 //The type of motion this body has. Should be one of: Body.STATIC (the body does not move), Body.DYNAMIC (body can move and respond to collisions) and Body.KINEMATIC (only moves according to its .velocity).
+//bodyPart.motionState = Phaser.Physics.P2.Body.DYNAMIC;
+//bodyPart.motionState = Phaser.Physics.P2.Body.KINEMATIC;
 
-
-
-
-
-function release() {
-  if (!selectedBodyPart) return;
-
-  var holdingOnBodyPart=game.physics.p2.hitTest(
-    selectedBodyPart,
-    course.holdsArray);
-
-  if (holdingOnBodyPart.length){
-    console.log('holding on')
-    selectedBodyPart.holdingOn=true;
-  }
-  else {
-    console.log('in else');
-    selectedBodyPart.holdingOn=false;
-  }
-
-  selectedBodyPart = null;
-}
 
 function click(pointer) {
-
+//check if mouse clicks on a body part
   let mousePosition = {
     'x': game.input.activePointer.worldX/scale,
     'y': game.input.activePointer.worldY/scale
@@ -108,5 +97,32 @@ function click(pointer) {
 
   if(clickedBodyParts.length) {
     selectedBodyPart = clickedBodyParts[0].parent;
+  }
+}
+
+function release() {
+
+  if (!selectedBodyPart) return;
+
+  var holdingOnBodyPart=game.physics.p2.hitTest(
+    selectedBodyPart,
+    course.holdsArray);
+//if holding on, set fixed position
+  if (holdingOnBodyPart.length){    
+    selectedBodyPart.holdingOn=true;
+    selectedBodyPart.staticPositionX=game.input.activePointer.worldX/scale;
+    selectedBodyPart.staticPositionY=game.input.activePointer.worldY/scale;
+  }
+
+  selectedBodyPart = null;
+}
+
+
+function move() {
+  if (!selectedBodyPart) return;
+
+//release limb if force is too great
+  if (climber.getForceOnBodyPart(selectedBodyPart)>1500){
+    selectedBodyPart = null;
   }
 }

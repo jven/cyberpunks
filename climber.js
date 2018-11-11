@@ -124,6 +124,27 @@ cyberpunks.Climber.prototype.getSelectableBodyParts = function() {
   ];
 };
 
+cyberpunks.Climber.prototype.selectableBodyPartToConstraintNumber = function(bodyPart) {
+  switch (bodyPart){
+    case this.leftHand_.body:
+      return 12;
+    case this.rightHand_.body:
+      return 13;
+    case this.leftFoot_.body:
+      return 6;
+    case this.rightFoot_.body:
+      return 7;
+  }
+};
+
+cyberpunks.Climber.prototype.getForceOnBodyPart = function(bodyPart) {
+  let constraintNumber= this.selectableBodyPartToConstraintNumber(bodyPart);
+  //only checks y direction force
+  //need to add x direction!!!!!!!!!
+  return Math.abs(climber.game_.physics.p2.world.constraints[constraintNumber].equations[1].multiplier)
+};
+
+
 cyberpunks.Climber.prototype.moveEntireBodyTo = function(
     climberCenterX, climberCenterY) {
   this.moveBodyPartTo_(
@@ -220,6 +241,9 @@ cyberpunks.Climber.prototype.moveEntireBodyTo = function(
 
 cyberpunks.Climber.prototype.enablePhysics_ = function() {
   this.game_.physics.p2.enable(this.bodyParts_, false);
+
+ // this.lowerBody_.body.mass=20;
+ // this.upperBody_.body.mass=20;
 
   // Create the constraints between body parts.
   this.game_.physics.p2.createRevoluteConstraint(

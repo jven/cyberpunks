@@ -7,7 +7,7 @@ cyberpunks.Course = function(game) {
         Math.random()*(game.width-200)+100,
         Math.random()*(game.height-200)+100,
         Math.random()*15+10,
-        0x0000ff
+        0xA52A2A
     );
       this.holdsArray.push(hold);
 
