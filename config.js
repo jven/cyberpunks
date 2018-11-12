@@ -4,8 +4,22 @@
  */
 cyberpunks.Config = {};
 
+// Whether to render the body parts using skeleton sprites instead of
+// rectangles.
 cyberpunks.Config.USE_SKELETON_SPRITE = true;
 
+// Whether to print on screen the forces acting on the hands/feet.
 cyberpunks.Config.SHOW_DEBUG_FORCES = false;
 
-cyberpunks.Config.CAMERA_SCALE = 0.75;
+// The dimensions of the screen on the window.
+cyberpunks.Config.SCREEN_WIDTH = 600;
+cyberpunks.Config.SCREEN_HEIGHT = 800;
+
+// The dimensions of the game world, possibly larger than what is shown on
+// screen.
+cyberpunks.Config.GAME_WIDTH = 600;
+cyberpunks.Config.GAME_HEIGHT = 800;
+
+// How far the camera is zoomed.
+// 1.0 is normal, 0.5 is more zoomed out, 2.0 is more zoomed in.
+cyberpunks.Config.CAMERA_SCALE = 1.0;

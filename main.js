@@ -1,6 +1,6 @@
 var game = new Phaser.Game(
-    1920 /* width */,
-    1920 /* height */,
+    cyberpunks.Config.SCREEN_WIDTH,
+    cyberpunks.Config.SCREEN_HEIGHT,
     Phaser.AUTO,
     '',
     {
@@ -21,8 +21,13 @@ function preloadFn() {
 };
 
 function createFn() {
-  game.add.tileSprite(0, 0, 1920, 1920, 'background');
-  game.world.setBounds(0, 0, 1920, 1920);
+  game.add.tileSprite(
+      0, 0,
+      cyberpunks.Config.GAME_WIDTH, cyberpunks.Config.GAME_HEIGHT,
+      'background');
+  game.world.setBounds(
+      0, 0,
+      cyberpunks.Config.GAME_WIDTH, cyberpunks.Config.GAME_HEIGHT);
 
   game.physics.startSystem(Phaser.Physics.P2JS);
   game.physics.p2.gravity.y = 1000;
