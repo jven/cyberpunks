@@ -52,11 +52,12 @@ function createFn() {
 
 function updateFn() {
 
-
-  game.debug.text('y force on right hand'+climber.getForceOnBodyPart(climber.rightHand_.body), 32, 32);
-  game.debug.text('y force on left hand'+climber.getForceOnBodyPart(climber.leftHand_.body), 32, 48);
-  game.debug.text('y force on right foot'+climber.getForceOnBodyPart(climber.rightFoot_.body), 32, 64);
-  game.debug.text('y force on left foot'+climber.getForceOnBodyPart(climber.leftFoot_.body), 32, 78);
+  if (cyberpunks.Config.SHOW_DEBUG_FORCES) {
+    game.debug.text('y force on right hand'+climber.getForceOnBodyPart(climber.rightHand_.body), 32, 32);
+    game.debug.text('y force on left hand'+climber.getForceOnBodyPart(climber.leftHand_.body), 32, 48);
+    game.debug.text('y force on right foot'+climber.getForceOnBodyPart(climber.rightFoot_.body), 32, 64);
+    game.debug.text('y force on left foot'+climber.getForceOnBodyPart(climber.leftFoot_.body), 32, 78);
+  }
 
 
   //drag with mouse
