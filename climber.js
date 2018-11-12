@@ -29,7 +29,7 @@ cyberpunks.Climber = function(game, size) {
       lowerBodyHeight);
   this.head_ = this.createBodyPart_(
       'head',
-      headSize, 
+      headSize,
       headSize);
   this.leftUpperLeg_ = this.createBodyPart_(
       'leftUpperLeg',
@@ -77,7 +77,7 @@ cyberpunks.Climber = function(game, size) {
       lowerArmHeight);
   this.rightUpperArm_ = this.createBodyPart_(
       'rightUpperArm',
-      upperArmWidth, 
+      upperArmWidth,
       upperArmHeight);
   this.bodyParts_ = [
     this.head_,
@@ -96,7 +96,7 @@ cyberpunks.Climber = function(game, size) {
     this.rightLowerArm_,
     this.rightUpperArm_
   ];
-    
+
   this.enablePhysics_();
 };
 
@@ -106,6 +106,21 @@ cyberpunks.Climber.prototype.getSelectableBodyParts = function() {
     this.rightHand_.body,
     this.leftFoot_.body,
     this.rightFoot_.body
+  ];
+};
+
+cyberpunks.Climber.prototype.getCollidableBodyParts_ = function() {
+  return [
+    this.upperBody_,
+    this.lowerBody_,
+    this.leftUpperLeg_,
+    this.leftLowerLeg_,
+    this.rightUpperLeg_,
+    this.rightLowerLeg_,
+    this.leftLowerArm_,
+    this.leftUpperArm_,
+    this.rightLowerArm_,
+    this.rightUpperArm_
   ];
 };
 
@@ -153,79 +168,86 @@ cyberpunks.Climber.prototype.moveEntireBodyTo = function(
   this.moveBodyPartTo_(
       this.leftUpperLeg_,
       climberCenterX,
-      climberCenterY, 
-      -this.lowerBody_.width / 2, 
+      climberCenterY,
+      -this.lowerBody_.width / 2,
       this.upperBody_.height / 2 + this.lowerBody_.height + this.leftUpperLeg_.height / 2);
   this.moveBodyPartTo_(
       this.leftLowerLeg_,
       climberCenterX,
-      climberCenterY, 
-      -this.lowerBody_.width / 2, 
+      climberCenterY,
+      -this.lowerBody_.width / 2,
       this.upperBody_.height / 2 + this.lowerBody_.height + this.leftUpperLeg_.height + this.leftLowerLeg_.height / 2);
   this.moveBodyPartTo_(
       this.leftFoot_,
       climberCenterX,
       climberCenterY,
-      -this.lowerBody_.width / 2 + this.leftUpperLeg_.width / 2 - this.leftFoot_.width / 2, 
+      -this.lowerBody_.width / 2 + this.leftUpperLeg_.width / 2 - this.leftFoot_.width / 2,
       this.upperBody_.height / 2 + this.lowerBody_.height + this.leftUpperLeg_.height + this.leftLowerLeg_.height + this.leftFoot_.height / 2);
   this.moveBodyPartTo_(
       this.rightUpperLeg_,
       climberCenterX,
       climberCenterY,
-      this.lowerBody_.width / 2, 
+      this.lowerBody_.width / 2,
       this.upperBody_.height / 2 + this.lowerBody_.height + this.rightUpperLeg_.height / 2);
   this.moveBodyPartTo_(
       this.rightLowerLeg_,
       climberCenterX,
       climberCenterY,
-      this.lowerBody_.width / 2, 
+      this.lowerBody_.width / 2,
       this.upperBody_.height / 2 + this.lowerBody_.height + this.rightUpperLeg_.height + this.rightLowerLeg_.height / 2);
   this.moveBodyPartTo_(
       this.rightFoot_,
       climberCenterX,
       climberCenterY,
-      this.lowerBody_.width / 2 - this.rightUpperLeg_.width / 2 + this.rightFoot_.width / 2, 
+      this.lowerBody_.width / 2 - this.rightUpperLeg_.width / 2 + this.rightFoot_.width / 2,
       this.upperBody_.height / 2 + this.lowerBody_.height + this.rightUpperLeg_.height + this.rightLowerLeg_.height + this.rightFoot_.height / 2);
   this.moveBodyPartTo_(
       this.leftHand_,
       climberCenterX,
       climberCenterY,
-      -this.upperBody_.width / 2 - this.leftUpperArm_.width - this.leftLowerArm_.width - this.leftHand_.width / 2, 
+      -this.upperBody_.width / 2 - this.leftUpperArm_.width - this.leftLowerArm_.width - this.leftHand_.width / 2,
       -this.upperBody_.height / 2 + this.leftLowerArm_.height / 2);
   this.moveBodyPartTo_(
       this.leftLowerArm_,
       climberCenterX,
       climberCenterY,
-      -this.upperBody_.width / 2 - this.leftUpperArm_.width - this.leftLowerArm_.width / 2, 
+      -this.upperBody_.width / 2 - this.leftUpperArm_.width - this.leftLowerArm_.width / 2,
       -this.upperBody_.height / 2 + this.leftLowerArm_.height / 2);
   this.moveBodyPartTo_(
       this.leftUpperArm_,
       climberCenterX,
       climberCenterY,
-      -this.upperBody_.width / 2 - this.leftUpperArm_.width / 2, 
+      -this.upperBody_.width / 2 - this.leftUpperArm_.width / 2,
       -this.upperBody_.height / 2 + this.leftLowerArm_.height / 2);
   this.moveBodyPartTo_(
       this.rightHand_,
       climberCenterX,
       climberCenterY,
-      this.upperBody_.width / 2 + this.rightUpperArm_.width + this.rightLowerArm_.width + this.rightHand_.width / 2, 
+      this.upperBody_.width / 2 + this.rightUpperArm_.width + this.rightLowerArm_.width + this.rightHand_.width / 2,
       -this.upperBody_.height / 2 + this.rightLowerArm_.height / 2);
   this.moveBodyPartTo_(
       this.rightLowerArm_,
       climberCenterX,
       climberCenterY,
-      this.upperBody_.width / 2 + this.rightUpperArm_.width + this.rightLowerArm_.width / 2, 
+      this.upperBody_.width / 2 + this.rightUpperArm_.width + this.rightLowerArm_.width / 2,
       -this.upperBody_.height / 2 + this.rightLowerArm_.height / 2);
   this.moveBodyPartTo_(
       this.rightUpperArm_,
       climberCenterX,
       climberCenterY,
-      this.upperBody_.width / 2 + this.rightUpperArm_.width / 2, 
+      this.upperBody_.width / 2 + this.rightUpperArm_.width / 2,
       -this.upperBody_.height / 2 + this.rightLowerArm_.height / 2);
 };
 
 cyberpunks.Climber.prototype.enablePhysics_ = function() {
   this.game_.physics.p2.enable(this.bodyParts_, false);
+
+  let collidableBodyParts = this.getCollidableBodyParts_();
+
+  for (let i in collidableBodyParts) {
+    collidableBodyParts[i].body.setCollisionGroup(this.game_.climberCollisionGroup);
+    collidableBodyParts[i].body.collides([this.game_.courseCollisionGroup, this.game_.climberCollisionGroup]);
+  }
 
  // this.lowerBody_.body.mass=20;
  // this.upperBody_.body.mass=20;
@@ -350,7 +372,7 @@ cyberpunks.Climber.prototype.createBodyPart_ = function(
       1,
       0,
       0);
-  
+
   // Add the sprite off screen. It will be positioned on screen later.
   return this.game_.add.sprite(-10000, -10000, name);
 };

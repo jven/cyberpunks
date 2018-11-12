@@ -1,6 +1,6 @@
 var game = new Phaser.Game(
-    800 /* width */,
-    600 /* height */,
+    1920 /* width */,
+    1920 /* height */,
     Phaser.AUTO,
     '',
     {
@@ -11,6 +11,7 @@ var game = new Phaser.Game(
 var climber;
 var course;
 var selectedBodyPart;
+var climberSize = 100;
 
 
 function preloadFn() {
@@ -20,16 +21,23 @@ function preloadFn() {
 };
 
 function createFn() {
-  game.add.tileSprite(0, 0, 1000, 900, 'background');
-  game.world.setBounds(0, 0, 1000, 900);
+  game.add.tileSprite(0, 0, 1920, 1920, 'background');
+  game.world.setBounds(0, 0, 1920, 1920);
 
   game.physics.startSystem(Phaser.Physics.P2JS);
   game.physics.p2.gravity.y = 1000;
 
-  climber = new cyberpunks.Climber(game, 100 /* size */);
-  climber.moveEntireBodyTo(300, 350);
+  // create collision groups
+  game.courseCollisionGroup = game.physics.p2.createCollisionGroup();
+  game.climberCollisionGroup = game.physics.p2.createCollisionGroup();
+
+  climber = new cyberpunks.Climber(game, climberSize);
+  climber.moveEntireBodyTo(100, 300);
 
   course = new cyberpunks.Course(game);
+
+  // for collision groups to collide with the world borders
+  game.physics.p2.updateBoundsCollisionGroup();
 
   game.camera.follow(climber.upperBody_);
 
@@ -101,7 +109,7 @@ function release() {
     selectedBodyPart,
     course.holdsArray);
 //if holding on, set fixed position
-  if (holdingOnBodyPart.length){    
+  if (holdingOnBodyPart.length){
     selectedBodyPart.holdingOn=true;
     selectedBodyPart.staticPositionX=game.input.activePointer.worldX/game.camera.scale.x;
     selectedBodyPart.staticPositionY=game.input.activePointer.worldY/game.camera.scale.y;
