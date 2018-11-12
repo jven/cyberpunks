@@ -15,15 +15,8 @@ var selectedBodyPart;
 
 function preloadFn() {
   game.load.image('background', 'bg.png');
-  game.load.image('head', 'sprites/head.png');
-  game.load.image('upperBody', 'sprites/upperBody.png');
-  game.load.image('lowerBody', 'sprites/lowerBody.png');
-  game.load.image('hand', 'sprites/hand.png');
-  game.load.image('lowerArm', 'sprites/lowerArm.png');
-  game.load.image('upperArm', 'sprites/upperArm.png');
-  game.load.image('foot', 'sprites/foot.png');
-  game.load.image('lowerLeg', 'sprites/lowerLeg.png');
-  game.load.image('upperLeg', 'sprites/upperLeg.png');
+  
+  cyberpunks.SpriteLoader.loadClimberSprites(game, 'skeleton');
 };
 
 function createFn() {
@@ -123,6 +116,6 @@ function move() {
 
 //release limb if force is too great
   if (climber.getForceOnBodyPart(selectedBodyPart)>1500){
-    selectedBodyPart = null;
+    // selectedBodyPart = null;
   }
 }

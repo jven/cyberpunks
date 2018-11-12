@@ -21,77 +21,62 @@ cyberpunks.Climber = function(game, size) {
   // Create the body parts.
   this.upperBody_ = this.createBodyPart_(
       'upperBody',
-      'upperBody',
       shoulderDistance,
       upperBodyHeight);
   this.lowerBody_ = this.createBodyPart_(
-      'lowerBody',
       'lowerBody',
       shoulderDistance, 
       lowerBodyHeight);
   this.head_ = this.createBodyPart_(
       'head',
-      'head',
       headSize, 
       headSize);
   this.leftUpperLeg_ = this.createBodyPart_(
       'leftUpperLeg',
-      'upperLeg',
       upperLegWidth,
       upperLegHeight);
   this.leftLowerLeg_ = this.createBodyPart_(
       'leftLowerLeg',
-      'lowerLeg',
       lowerLegWidth, 
       lowerLegHeight);
   this.leftFoot_ = this.createBodyPart_(
       'leftFoot',
-      'foot',
       footWidth, 
       footHeight);
   this.rightUpperLeg_ = this.createBodyPart_(
       'rightUpperLeg',
-      'upperLeg',
       upperLegWidth, 
       upperLegHeight);
   this.rightLowerLeg_ = this.createBodyPart_(
       'rightLowerLeg',
-      'lowerLeg',
       lowerLegWidth, 
       lowerLegHeight);
   this.rightFoot_ = this.createBodyPart_(
       'rightFoot',
-      'foot',
       footWidth, 
       footHeight);
   this.leftHand_ = this.createBodyPart_(
       'leftHand',
-      'hand',
       handSize, 
       handSize);
   this.leftLowerArm_ = this.createBodyPart_(
       'leftLowerArm',
-      'lowerArm',
       lowerArmWidth, 
       lowerArmHeight);
   this.leftUpperArm_ = this.createBodyPart_(
       'leftUpperArm',
-      'upperArm',
       upperArmWidth, 
       upperArmHeight);
   this.rightHand_ = this.createBodyPart_(
       'rightHand',
-      'hand',
       handSize, 
       handSize);
   this.rightLowerArm_ = this.createBodyPart_(
       'rightLowerArm',
-      'lowerArm',
       lowerArmWidth, 
       lowerArmHeight);
   this.rightUpperArm_ = this.createBodyPart_(
       'rightUpperArm',
-      'upperArm',
       upperArmWidth, 
       upperArmHeight);
   this.bodyParts_ = [
@@ -339,10 +324,10 @@ cyberpunks.Climber.prototype.moveBodyPartTo_ = function(
 };
 
 cyberpunks.Climber.prototype.createBodyPart_ = function(
-    name, imageName, width, height) {
+    bodyPartName, width, height, rotationDegrees) {
   if (cyberpunks.Config.USE_SKELETON_SPRITE) {
     // Add the sprite off screen. It will be positioned on screen later.
-    var skeletonSprite = this.game_.add.sprite(-10000, -10000, imageName);
+    var skeletonSprite = this.game_.add.sprite(-10000, -10000, bodyPartName);
     skeletonSprite.width = width;
     skeletonSprite.height = height;
     return skeletonSprite;
