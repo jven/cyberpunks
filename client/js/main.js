@@ -1,3 +1,5 @@
+var socket = io();
+
 var game = new Phaser.Game(
     cyberpunks.Config.SCREEN_WIDTH,
     cyberpunks.Config.SCREEN_HEIGHT,
