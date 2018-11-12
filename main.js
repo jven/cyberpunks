@@ -1,6 +1,6 @@
 var game = new Phaser.Game(
-    800 /* width */,
-    600 /* height */,
+    1920 /* width */,
+    1920 /* height */,
     Phaser.AUTO,
     '',
     {
@@ -11,6 +11,7 @@ var game = new Phaser.Game(
 var climber;
 var course;
 var selectedBodyPart;
+var climberSize = 100;
 
 
 function preloadFn() {
@@ -27,8 +28,8 @@ function preloadFn() {
 };
 
 function createFn() {
-  game.add.tileSprite(0, 0, 1000, 900, 'background');
-  game.world.setBounds(0, 0, 1000, 900);
+  game.add.tileSprite(0, 0, 1920, 1920, 'background');
+  game.world.setBounds(0, 0, 1920, 1920);
 
   game.physics.startSystem(Phaser.Physics.P2JS);
   game.physics.p2.gravity.y = 1000;
@@ -37,9 +38,8 @@ function createFn() {
   game.courseCollisionGroup = game.physics.p2.createCollisionGroup();
   game.climberCollisionGroup = game.physics.p2.createCollisionGroup();
 
-
-  climber = new cyberpunks.Climber(game, 100 /* size */);
-  climber.moveEntireBodyTo(100, 700);
+  climber = new cyberpunks.Climber(game, climberSize);
+  climber.moveEntireBodyTo(100, 300);
 
   course = new cyberpunks.Course(game);
 

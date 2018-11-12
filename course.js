@@ -1,7 +1,7 @@
 cyberpunks.Course = function(game) {
   this.game_ = game;
   this.holdsArray = [];
-  for (let i=1; i<40; i+=1) {
+  for (let i=1; i<100; i+=1) {
     var hold=this.createHold(
         'hold' + i,
         Math.random()*(game.width-200)+100,
