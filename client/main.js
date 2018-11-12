@@ -129,6 +129,6 @@ function move() {
 
 //release limb if force is too great
   if (climber.getForceOnBodyPart(selectedBodyPart)>1500){
-    // selectedBodyPart = null;
+    selectedBodyPart = null;
   }
 }
