@@ -42,7 +42,7 @@ To https://git.heroku.com/obscure-chamber-23043.git
    d80e9c1..d5b5afd  master -> master
 ```
 
-3. Run:
+4. Run:
 
 ```shell
 .../cyberpunks $ heroku open
