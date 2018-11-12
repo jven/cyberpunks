@@ -12,7 +12,7 @@ cyberpunks.Config.USE_SKELETON_SPRITE = true;
 cyberpunks.Config.SHOW_DEBUG_FORCES = false;
 
 // The dimensions of the screen on the window.
-cyberpunks.Config.SCREEN_WIDTH = 600;
+cyberpunks.Config.SCREEN_WIDTH = 1000;
 cyberpunks.Config.SCREEN_HEIGHT = 600;
 
 // The dimensions of the game world, possibly larger than what is shown on
