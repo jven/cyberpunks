@@ -10,7 +10,6 @@ var game = new Phaser.Game(
     });
 var climber;
 var course;
-var scale=.5;
 var selectedBodyPart;
 
 
@@ -49,8 +48,8 @@ function createFn() {
 
   game.camera.follow(climber.upperBody_);
 
-  game.camera.scale.x = scale;
-  game.camera.scale.y = scale;
+  game.camera.scale.x = cyberpunks.Config.CAMERA_SCALE;
+  game.camera.scale.y = cyberpunks.Config.CAMERA_SCALE;
 
   game.input.onDown.add(click, this);
   game.input.onUp.add(release, this);
@@ -60,19 +59,20 @@ function createFn() {
 
 function updateFn() {
 
-
-  game.debug.text('y force on right hand'+climber.getForceOnBodyPart(climber.rightHand_.body), 32, 32);
-  game.debug.text('y force on left hand'+climber.getForceOnBodyPart(climber.leftHand_.body), 32, 48);
-  game.debug.text('y force on right foot'+climber.getForceOnBodyPart(climber.rightFoot_.body), 32, 64);
-  game.debug.text('y force on left foot'+climber.getForceOnBodyPart(climber.leftFoot_.body), 32, 78);
+  if (cyberpunks.Config.SHOW_DEBUG_FORCES) {
+    game.debug.text('y force on right hand '+climber.getForceOnBodyPart(climber.rightHand_.body), 32, 32);
+    game.debug.text('y force on left hand '+climber.getForceOnBodyPart(climber.leftHand_.body), 32, 48);
+    game.debug.text('y force on right foot '+climber.getForceOnBodyPart(climber.rightFoot_.body), 32, 64);
+    game.debug.text('y force on left foot '+climber.getForceOnBodyPart(climber.leftFoot_.body), 32, 78);
+  }
 
 
   //drag with mouse
   if(selectedBodyPart) {
     selectedBodyPart.holdingOn=false;
     selectedBodyPart.setZeroVelocity();
-    selectedBodyPart.x=game.input.activePointer.worldX/scale;
-    selectedBodyPart.y=game.input.activePointer.worldY/scale;
+    selectedBodyPart.x=game.input.activePointer.worldX/game.camera.scale.x;
+    selectedBodyPart.y=game.input.activePointer.worldY/game.camera.scale.y;
   }
 
   //fix each limb if holding on
@@ -95,8 +95,8 @@ function updateFn() {
 function click(pointer) {
 //check if mouse clicks on a body part
   let mousePosition = {
-    'x': game.input.activePointer.worldX/scale,
-    'y': game.input.activePointer.worldY/scale
+    'x': game.input.activePointer.worldX/game.camera.scale.x,
+    'y': game.input.activePointer.worldY/game.camera.scale.y
   };
 
   var clickedBodyParts = game.physics.p2.hitTest(
@@ -118,8 +118,8 @@ function release() {
 //if holding on, set fixed position
   if (holdingOnBodyPart.length){
     selectedBodyPart.holdingOn=true;
-    selectedBodyPart.staticPositionX=game.input.activePointer.worldX/scale;
-    selectedBodyPart.staticPositionY=game.input.activePointer.worldY/scale;
+    selectedBodyPart.staticPositionX=game.input.activePointer.worldX/game.camera.scale.x;
+    selectedBodyPart.staticPositionY=game.input.activePointer.worldY/game.camera.scale.y;
   }
 
   selectedBodyPart = null;
