@@ -34,10 +34,18 @@ function createFn() {
   game.physics.startSystem(Phaser.Physics.P2JS);
   game.physics.p2.gravity.y = 1000;
 
+  // create collision groups
+  game.courseCollisionGroup = game.physics.p2.createCollisionGroup();
+  game.climberCollisionGroup = game.physics.p2.createCollisionGroup();
+
+
   climber = new cyberpunks.Climber(game, 100 /* size */);
-  climber.moveEntireBodyTo(300, 350);
+  climber.moveEntireBodyTo(100, 700);
 
   course = new cyberpunks.Course(game);
+
+  // for collision groups to collide with the world borders
+  game.physics.p2.updateBoundsCollisionGroup();
 
   game.camera.follow(climber.upperBody_);
 
@@ -108,7 +116,7 @@ function release() {
     selectedBodyPart,
     course.holdsArray);
 //if holding on, set fixed position
-  if (holdingOnBodyPart.length){    
+  if (holdingOnBodyPart.length){
     selectedBodyPart.holdingOn=true;
     selectedBodyPart.staticPositionX=game.input.activePointer.worldX/scale;
     selectedBodyPart.staticPositionY=game.input.activePointer.worldY/scale;
