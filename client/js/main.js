@@ -12,6 +12,7 @@ var game = new Phaser.Game(
     });
 var climber;
 var course;
+var selectedBodyPartName;
 var selectedBodyPart;
 var climberSize = 100;
 
@@ -55,6 +56,28 @@ function createFn() {
   game.input.onUp.add(release, this);
   game.input.addMoveCallback(move, this);
 
+  socket.on('state', msg => {
+    var collaboratorBodyPart = null;
+    if (msg.bodyPartName == 'leftHand') {
+      collaboratorBodyPart = climber.leftHand_.body;
+    }
+    if (msg.bodyPartName == 'rightHand') {
+      collaboratorBodyPart = climber.rightHand_.body;
+    }
+    if (msg.bodyPartName == 'leftFoot') {
+      collaboratorBodyPart = climber.leftFoot_.body;
+    }
+    if (msg.bodyPartName == 'rightFoot') {
+      collaboratorBodyPart = climber.rightFoot_.body;
+    }
+    if (collaboratorBodyPart && 
+        typeof msg.x == "number" && 
+        typeof msg.y == "number") {
+      collaboratorBodyPart.x = msg.x;
+      collaboratorBodyPart.y = msg.y;
+      collaboratorBodyPart.setZeroVelocity();
+    }
+  });
 }
 
 function updateFn() {
@@ -83,6 +106,15 @@ function updateFn() {
       bodyPart.y=bodyPart.staticPositionY;
     }
   })
+
+  // Send the hand/foot coordinates to the server.
+  if (selectedBodyPart) {
+    socket.emit('state', {
+      bodyPartName: selectedBodyPart.sprite.key,
+      x: selectedBodyPart.x,
+      y: selectedBodyPart.y
+    });
+  }
 }
 
 

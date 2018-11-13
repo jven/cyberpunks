@@ -1,16 +1,16 @@
 cyberpunks.Course = function(game) {
   this.game_ = game;
   this.holdsArray = [];
-  for (let i=1; i<100; i+=1) {
-    var hold=this.createHold(
-        'hold' + i,
-        Math.random()*(cyberpunks.Config.GAME_WIDTH-200)+100,
-        Math.random()*(cyberpunks.Config.GAME_HEIGHT-200)+100,
-        Math.random()*15+10,
-        0xA52A2A
-    );
-    this.holdsArray.push(hold);
-  }
+  // for (let i=1; i<100; i+=1) {
+  //   var hold=this.createHold(
+  //       'hold' + i,
+  //       Math.random()*(cyberpunks.Config.GAME_WIDTH-200)+100,
+  //       Math.random()*(cyberpunks.Config.GAME_HEIGHT-200)+100,
+  //       Math.random()*15+10,
+  //       0xA52A2A
+  //   );
+  //   this.holdsArray.push(hold);
+  // }
 
   this.game_.physics.p2.enable(this.holdsArray, false);
 
