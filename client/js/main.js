@@ -35,10 +35,10 @@ function createFn() {
   game.courseCollisionGroup = game.physics.p2.createCollisionGroup();
   game.climberCollisionGroup = game.physics.p2.createCollisionGroup();
 
+  course = new cyberpunks.Course(game);
+
   climber = new cyberpunks.Climber(game, cyberpunks.Config.CLIMBER_SIZE);
   climber.moveEntireBodyTo(100, 300);
-
-  course = new cyberpunks.Course(game);
 
   // for collision groups to collide with the world borders
   game.physics.p2.updateBoundsCollisionGroup();
