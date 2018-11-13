@@ -129,7 +129,7 @@ cyberpunks.Climber.prototype.releaseDraggedLimbs = function(course) {
     }
 
     var bodyPart = this.bodyPartForDraggableLimb_(draggableLimb);
-    if (course.isHoldAt(bodyPart.body.x, bodyPart.body.y)) {
+    if (course.doesP2BodyIntersectAnyHold(bodyPart.body)) {
       this.fixedLimbPositions_[draggableLimb] = {
         state: cyberpunks.LimbState.HOLDING,
         x: bodyPart.body.x,

@@ -1,52 +1,50 @@
-cyberpunks.Course = function(game) {
+cyberpunks.Course = function(game, holdSpecs) {
   this.game_ = game;
-  this.holdsArray_ = [];
-  for (let i=1; i<100; i+=1) {
-    var hold=this.createHold_(
-        'hold' + i,
-        Math.random()*(cyberpunks.Config.GAME_WIDTH-200)+100,
-        Math.random()*(cyberpunks.Config.GAME_HEIGHT-200)+100,
-        Math.random()*15+10,
-        0xA52A2A
-    );
-    this.holdsArray_.push(hold);
+  this.holds_ = [];
+  for (var i = 0; i < holdSpecs.length; i++) {
+    this.holds_.push(this.createHold_(i, holdSpecs[i]));
   }
+  this.game_.physics.p2.enable(this.holds_, false);
 
-  this.game_.physics.p2.enable(this.holdsArray_, false);
-
-  for (let i in this.holdsArray_) {
-    this.holdsArray_[i].body.static = true;
-    this.holdsArray_[i].body.setCollisionGroup(this.game_.courseCollisionGroup);
-    this.holdsArray_[i].body.collides([this.game_.climberCollisionGroup]);
+  for (let i in this.holds_) {
+    this.holds_[i].body.static = true;
+    this.holds_[i].body.setCollisionGroup(this.game_.courseCollisionGroup);
+    this.holds_[i].body.collides([this.game_.climberCollisionGroup]);
   }
 };
 
-cyberpunks.Course.prototype.isHoldAt = function(x, y) {
-  var clickedHold = this.game_.physics.p2.hitTest(
-      {'x': x, 'y': y}, this.holdsArray_);
-  return !!clickedHold.length;
+cyberpunks.Course.newBuilder = function(game) {
+  return new cyberpunks.CourseBuilder(game);
 };
 
-cyberpunks.Course.prototype.createHold_ = function(
-    name, x, y, diameter, fillColor) {
-  var graphics = this.game_.add.graphics(x - 10, y - 10);
+cyberpunks.Course.prototype.doesP2BodyIntersectAnyHold = function(p2Body) {
+  var clickedHolds = this.game_.physics.p2.hitTest(p2Body, this.holds_);
+  return !!clickedHolds.length;
+};
 
-  graphics.beginFill(fillColor);
-  graphics.drawCircle(-1000000, -1000000, diameter);
+cyberpunks.Course.prototype.createHold_ = function(i, holdSpec) {
+  var graphics = this.game_.add.graphics(-10000, 10000);
+
+  graphics.beginFill(holdSpec.color);
+  if (holdSpec.shape == cyberpunks.HoldSpec.Shape.RECTANGLE) {
+    graphics.drawRect(0, 0, holdSpec.width, holdSpec.height);
+  } else {
+    graphics.drawCircle(0, 0, holdSpec.width);
+  }
   graphics.endFill();
 
   var texture = graphics.generateTexture();
   this.game_.cache.addSpriteSheet(
-      name,
+      'hold' + i,
       null,
       texture.baseTexture.source,
-      diameter,
-      diameter,
+      holdSpec.width,
+      holdSpec.height,
       1,
       0,
       0);
 
-  var hold = this.game_.add.sprite(x, y, name);
+  var hold = this.game_.add.sprite(holdSpec.x, holdSpec.y, 'hold' + i);
 
   return hold;
 };

@@ -35,8 +35,14 @@ function createFn() {
   game.courseCollisionGroup = game.physics.p2.createCollisionGroup();
   game.climberCollisionGroup = game.physics.p2.createCollisionGroup();
 
-  course = new cyberpunks.Course(game);
-
+  course = cyberpunks.Courses.squareGrid(
+      game,
+      0 /* minX */, 
+      0 /* minY */, 
+      cyberpunks.Config.GAME_WIDTH /* maxX */, 
+      cyberpunks.Config.GAME_HEIGHT /* maxY */,
+      30 /* holdSize */,
+      180 /* holdSpacing */);
   climber = new cyberpunks.Climber(game, cyberpunks.Config.CLIMBER_SIZE);
   climber.moveEntireBodyTo(100, 300);
 
@@ -62,7 +68,8 @@ function createFn() {
     if (msg.draggableLimb &&
         typeof msg.x == "number" &&
         typeof msg.y == "number") {
-      climber.fixLimbTo(draggableLimb, msg.x, msg.y,cyberpunks.LimbState.OTHER_DRAGGING);
+      climber.fixLimbTo(
+          draggableLimb, msg.x, msg.y,cyberpunks.LimbState.OTHER_DRAGGING);
     }
   });
 }
