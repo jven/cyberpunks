@@ -12,8 +12,6 @@ var game = new Phaser.Game(
     });
 var climber;
 var course;
-var climberSize = 100;
-
 
 function preloadFn() {
   game.load.image('background', 'bg.png');
@@ -31,13 +29,13 @@ function createFn() {
       cyberpunks.Config.GAME_WIDTH, cyberpunks.Config.GAME_HEIGHT);
 
   game.physics.startSystem(Phaser.Physics.P2JS);
-  game.physics.p2.gravity.y = 1000;
+  game.physics.p2.gravity.y = cyberpunks.Config.GRAVITY_Y;
 
   // create collision groups
   game.courseCollisionGroup = game.physics.p2.createCollisionGroup();
   game.climberCollisionGroup = game.physics.p2.createCollisionGroup();
 
-  climber = new cyberpunks.Climber(game, climberSize);
+  climber = new cyberpunks.Climber(game, cyberpunks.Config.CLIMBER_SIZE);
   climber.moveEntireBodyTo(100, 300);
 
   course = new cyberpunks.Course(game);
@@ -48,10 +46,12 @@ function createFn() {
   game.camera.scale.x = cyberpunks.Config.CAMERA_SCALE;
   game.camera.scale.y = cyberpunks.Config.CAMERA_SCALE;
   game.camera.deadzone = new Phaser.Rectangle(
-      100,
-      100, 
-      cyberpunks.Config.SCREEN_WIDTH - 200,
-      cyberpunks.Config.SCREEN_HEIGHT - 200);
+      cyberpunks.Config.CAMERA_DEADZONE_WIDTH,
+      cyberpunks.Config.CAMERA_DEADZONE_WIDTH, 
+      (cyberpunks.Config.SCREEN_WIDTH
+          - 2 * cyberpunks.Config.CAMERA_DEADZONE_WIDTH),
+      (cyberpunks.Config.SCREEN_HEIGHT
+          - 2 * cyberpunks.Config.CAMERA_DEADZONE_WIDTH));
 
   game.input.onDown.add(click, this);
   game.input.onUp.add(release, this);

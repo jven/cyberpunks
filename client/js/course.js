@@ -44,8 +44,7 @@ cyberpunks.Course.prototype.createHold_ = function(
       diameter,
       1,
       0,
-      0
-  );
+      0);
 
   var hold = this.game_.add.sprite(x, y, name);
 
