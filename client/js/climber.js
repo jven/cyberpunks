@@ -136,12 +136,32 @@ cyberpunks.Climber.prototype.fixDraggedLimbsTo = function(x, y) {
   }
 };
 
+
+cyberpunks.Climber.prototype.numberOflimbsHoldingOn = function() {
+  var counter=0;
+  for (var draggableLimb in this.fixedLimbPositions_) {
+    counter+= (this.fixedLimbPositions_[draggableLimb].state===cyberpunks.LimbState.HOLDING)
+  }
+  return counter;
+}
+
 /** Unfixes limbs based on the forces acting on them, as appropriate. */
 cyberpunks.Climber.prototype.maybeUnfixLimbsBasedOnForce = function() {
   var toUnfix = [];
+
   for (var draggableLimb in this.fixedLimbPositions_) {
-    if (this.getForceOnDraggableLimb(draggableLimb) > 1500) {
+
+    if (this.fixedLimbPositions_[draggableLimb].state === cyberpunks.LimbState.HOLDING 
+        && this.getForceOnDraggableLimb(draggableLimb) > 900) {
       toUnfix.push(draggableLimb);
+    }
+    if (this.fixedLimbPositions_[draggableLimb].state === cyberpunks.LimbState.SELF_DRAGGING) {
+      if (this.getForceOnDraggableLimb(draggableLimb) > 1500){
+        toUnfix.push(draggableLimb);
+      }
+      else if(this.numberOflimbsHoldingOn()==0 && this.getForceOnDraggableLimb(draggableLimb) > 650){
+        toUnfix.push(draggableLimb);
+      }
     }
   }
 
@@ -201,7 +221,7 @@ cyberpunks.Climber.prototype.getDraggedLimbMessage = function() {
   var msg = [];
   for (var draggableLimb in this.fixedLimbPositions_) {
     var bodyPart = this.fixedLimbPositions_[draggableLimb];
-    console.log(bodyPart.state)
+
     if (bodyPart.state!=cyberpunks.LimbState.SELF_DRAGGING &&
       bodyPart.state!=cyberpunks.LimbState.HOLDING) continue;
     msg.push({
