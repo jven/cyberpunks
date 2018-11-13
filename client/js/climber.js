@@ -1,3 +1,8 @@
+/**
+ * An object encapsulating the climber and its constituent body parts. This
+ * class is responsible for composing the climber from P2 bodies and positioning
+ * these physics bodies during runtime.
+ */
 cyberpunks.Climber = function(game, size) {
   this.game_ = game;
 
@@ -97,16 +102,111 @@ cyberpunks.Climber = function(game, size) {
     this.rightUpperArm_
   ];
 
+  // The fixed positions of the draggable limbs. If a limb is not present in the
+  // map, then the limb is not fixed and is subject to gravity. If a limb is
+  // being dragged, that will take precedence over this fixed position.
+  this.fixedLimbPositions_ = {};
+
+  // The draggable limbs being dragged. A limb being dragged will follow the
+  // mouse. Dragging takes precedence over a fixed position. The values of this
+  // map is not used.
+  this.draggedLimbs_ = {};
+
   this.enablePhysics_();
+  this.fixCamera_();
 };
 
-cyberpunks.Climber.prototype.getSelectableBodyParts = function() {
-  return [
-    this.leftHand_.body,
-    this.rightHand_.body,
-    this.leftFoot_.body,
-    this.rightFoot_.body
-  ];
+/**
+ * Fixes the center of the given draggable limb to the given coordinates.
+ * Fixing a limb makes it ignore gravity.
+ */
+cyberpunks.Climber.prototype.fixLimbTo = function(draggableLimb, x, y) {
+  this.fixedLimbPositions_[draggableLimb] = [x, y];
+};
+
+/** Fixes any limbs currently being dragged to the given coordinates. */
+cyberpunks.Climber.prototype.fixDraggedLimbsTo = function(x, y) {
+  for (var draggableLimb in this.draggedLimbs_) {
+    this.fixLimbTo(draggableLimb, x, y);
+  }
+};
+
+/** Unfixes limbs based on the forces acting on them, as appropriate. */
+cyberpunks.Climber.prototype.maybeUnfixLimbsBasedOnForce = function() {
+  var toUnfix = [];
+  for (var draggableLimb in this.fixedLimbPositions_) {
+    if (this.getForceOnDraggableLimb(draggableLimb) > 1500) {
+      toUnfix.push(draggableLimb);
+    }
+  }
+
+  toUnfix.forEach(draggableLimb => {
+    delete this.fixedLimbPositions_[draggableLimb];
+  });
+};
+
+/** Starts dragging the limb at the given mouse coordinates. */
+cyberpunks.Climber.prototype.startDraggingAndUnfixLimbAt = function(
+    mouseX, mouseY) {
+  var draggableLimb = null;
+  if (this.isBodyPartAt_(this.leftHand_, mouseX, mouseY)) {
+    draggableLimb = cyberpunks.DraggableLimb.LEFT_HAND;
+  } else if (this.isBodyPartAt_(this.rightHand_, mouseX, mouseY)) {
+    draggableLimb = cyberpunks.DraggableLimb.RIGHT_HAND;
+  } else if (this.isBodyPartAt_(this.leftFoot_, mouseX, mouseY)) {
+    draggableLimb = cyberpunks.DraggableLimb.LEFT_FOOT;
+  } else if (this.isBodyPartAt_(this.rightFoot_, mouseX, mouseY)) {
+    draggableLimb = cyberpunks.DraggableLimb.RIGHT_FOOT;
+  }
+
+  if (draggableLimb) {
+    delete this.fixedLimbPositions_[draggableLimb];
+    this.draggedLimbs_[draggableLimb] = true;
+  }
+};
+
+/** Stops dragging of all draggable limbs. */
+cyberpunks.Climber.prototype.stopDraggingAllLimbs = function() {
+  this.draggedLimbs_ = {};
+};
+
+/**
+ * Sets the positions of the draggable limbs as necessary:
+ *   - If the limb is being dragged, sets its position to the mouse.
+ *   - Otherwise, if the limb is fixed, sets its position to its corresponding
+ *     fixed position.
+ *   - Otherwise, does nothing.
+ */
+cyberpunks.Climber.prototype.positionDraggableLimbs = function(mouseX, mouseY) {
+  for (var draggableLimb in this.draggedLimbs_) {
+    var bodyPart = this.bodyPartForDraggableLimb_(draggableLimb);
+    this.moveBodyPartTo_(bodyPart, mouseX, mouseY, 0, 0);
+  }
+  for (var draggableLimb in this.fixedLimbPositions_) {
+    if (this.draggedLimbs_[draggableLimb]) {
+      continue;
+    }
+    var bodyPart = this.bodyPartForDraggableLimb_(draggableLimb);
+    var position = this.fixedLimbPositions_[draggableLimb];
+    this.moveBodyPartTo_(bodyPart, position[0], position[1], 0, 0);
+  }
+};
+
+/**
+ * Returns a message for the server indicating which body parts are being
+ * dragged and where they are.
+ */
+cyberpunks.Climber.prototype.getDraggedLimbMessage = function() {
+  var msg = [];
+  for (var draggableLimb in this.draggedLimbs_) {
+    var bodyPart = this.bodyPartForDraggableLimb_(draggableLimb);
+    msg.push({
+      draggableLimb: draggableLimb,
+      x: bodyPart.body.x,
+      y: bodyPart.body.y
+    });
+  }
+  return msg;
 };
 
 cyberpunks.Climber.prototype.getCollidableBodyParts_ = function() {
@@ -124,26 +224,26 @@ cyberpunks.Climber.prototype.getCollidableBodyParts_ = function() {
   ];
 };
 
-cyberpunks.Climber.prototype.selectableBodyPartToConstraintNumber = function(bodyPart) {
-  switch (bodyPart){
-    case this.leftHand_.body:
-      return 12;
-    case this.rightHand_.body:
-      return 13;
-    case this.leftFoot_.body:
-      return 6;
-    case this.rightFoot_.body:
-      return 7;
+cyberpunks.Climber.prototype.getForceOnDraggableLimb = function(draggableLimb) {
+  var constraintNumber = 0;
+  switch (draggableLimb) {
+    case cyberpunks.DraggableLimb.LEFT_HAND:
+      constraintNumber = 12;
+      break;
+    case cyberpunks.DraggableLimb.RIGHT_HAND:
+      constraintNumber = 13;
+      break;
+    case cyberpunks.DraggableLimb.LEFT_FOOT:
+      constraintNumber = 6;
+      break;
+    case cyberpunks.DraggableLimb.RIGHT_FOOT:
+      constraintNumber = 7;
+      break;
   }
+  // TODO(douglas): only checks y direction force, need to add x direction!
+  return Math.abs(climber.game_.physics.p2.world.constraints[constraintNumber]
+      .equations[1].multiplier);
 };
-
-cyberpunks.Climber.prototype.getForceOnBodyPart = function(bodyPart) {
-  let constraintNumber= this.selectableBodyPartToConstraintNumber(bodyPart);
-  //only checks y direction force
-  //need to add x direction!!!!!!!!!
-  return Math.abs(climber.game_.physics.p2.world.constraints[constraintNumber].equations[1].multiplier)
-};
-
 
 cyberpunks.Climber.prototype.moveEntireBodyTo = function(
     climberCenterX, climberCenterY) {
@@ -249,9 +349,6 @@ cyberpunks.Climber.prototype.enablePhysics_ = function() {
     collidableBodyParts[i].body.collides([this.game_.courseCollisionGroup, this.game_.climberCollisionGroup]);
   }
 
- // this.lowerBody_.body.mass=20;
- // this.upperBody_.body.mass=20;
-
   // Create the constraints between body parts.
   this.game_.physics.p2.createRevoluteConstraint(
       this.head_,
@@ -337,10 +434,16 @@ cyberpunks.Climber.prototype.enablePhysics_ = function() {
       this.rightLowerArm_,
       [this.rightLowerArm_.width / 2, 0])
       .setLimits(-Math.PI / 8, Math.PI / 8);
-}
+};
 
+cyberpunks.Climber.prototype.fixCamera_ = function() {
+  this.game_.camera.follow(this.upperBody_);
+};
+
+// TODO(justin): Replace anchorX and offsetX with just a single x param.
 cyberpunks.Climber.prototype.moveBodyPartTo_ = function(
     bodyPart, anchorX, anchorY, offsetX, offsetY) {
+  bodyPart.body.setZeroVelocity();
   bodyPart.body.x = anchorX + offsetX - bodyPart.width / 2;
   bodyPart.body.y = anchorY + offsetY - bodyPart.height / 2;
 };
@@ -380,4 +483,27 @@ cyberpunks.Climber.prototype.createBodyPart_ = function(
 cyberpunks.Climber.prototype.randomColor_ = function() {
   var randomValue = Math.floor(Math.random() * 156) + 100;
   return (randomValue << 16) + (randomValue << 8) + randomValue;
+};
+
+cyberpunks.Climber.prototype.bodyPartForDraggableLimb_ = function(
+    draggableLimb) {
+  switch (draggableLimb) {
+    case cyberpunks.DraggableLimb.LEFT_HAND:
+      return this.leftHand_;
+    case cyberpunks.DraggableLimb.RIGHT_HAND:
+      return this.rightHand_;
+    case cyberpunks.DraggableLimb.LEFT_FOOT:
+      return this.leftFoot_;
+    case cyberpunks.DraggableLimb.RIGHT_FOOT:
+      return this.rightFoot_;
+    default:
+      console.error('Unexpected draggable limb: ' + draggableLimb);
+      return null;
+  }
+};
+
+cyberpunks.Climber.prototype.isBodyPartAt_ = function(bodyPart, x, y) {
+  var mousePosition = {'x': x, 'y': y};
+  var collision = game.physics.p2.hitTest(mousePosition, [bodyPart.body]);
+  return !!collision.length;
 };

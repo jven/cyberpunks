@@ -12,8 +12,6 @@ var game = new Phaser.Game(
     });
 var climber;
 var course;
-var selectedBodyPartName;
-var selectedBodyPart;
 var climberSize = 100;
 
 
@@ -47,122 +45,74 @@ function createFn() {
   // for collision groups to collide with the world borders
   game.physics.p2.updateBoundsCollisionGroup();
 
-  game.camera.follow(climber.upperBody_);
-
   game.camera.scale.x = cyberpunks.Config.CAMERA_SCALE;
   game.camera.scale.y = cyberpunks.Config.CAMERA_SCALE;
+  game.camera.deadzone = new Phaser.Rectangle(
+      100,
+      100, 
+      cyberpunks.Config.SCREEN_WIDTH - 200,
+      cyberpunks.Config.SCREEN_HEIGHT - 200);
 
   game.input.onDown.add(click, this);
   game.input.onUp.add(release, this);
-  game.input.addMoveCallback(move, this);
 
+  // Listen for state messages from the server. On receipt, fix the given limb
+  // to the corresponding position.
   socket.on('state', msg => {
-    var collaboratorBodyPart = null;
-    if (msg.bodyPartName == 'leftHand') {
-      collaboratorBodyPart = climber.leftHand_.body;
-    }
-    if (msg.bodyPartName == 'rightHand') {
-      collaboratorBodyPart = climber.rightHand_.body;
-    }
-    if (msg.bodyPartName == 'leftFoot') {
-      collaboratorBodyPart = climber.leftFoot_.body;
-    }
-    if (msg.bodyPartName == 'rightFoot') {
-      collaboratorBodyPart = climber.rightFoot_.body;
-    }
-    if (collaboratorBodyPart && 
-        typeof msg.x == "number" && 
+    if (msg.draggableLimb &&
+        typeof msg.x == "number" &&
         typeof msg.y == "number") {
-      collaboratorBodyPart.x = msg.x;
-      collaboratorBodyPart.y = msg.y;
-      collaboratorBodyPart.setZeroVelocity();
+      climber.fixLimbTo(draggableLimb, msg.x, msg.y);
     }
   });
 }
 
 function updateFn() {
-
   if (cyberpunks.Config.SHOW_DEBUG_FORCES) {
-    game.debug.text('y force on right hand '+climber.getForceOnBodyPart(climber.rightHand_.body), 32, 32);
-    game.debug.text('y force on left hand '+climber.getForceOnBodyPart(climber.leftHand_.body), 32, 48);
-    game.debug.text('y force on right foot '+climber.getForceOnBodyPart(climber.rightFoot_.body), 32, 64);
-    game.debug.text('y force on left foot '+climber.getForceOnBodyPart(climber.leftFoot_.body), 32, 78);
-  }
-
-
-  //drag with mouse
-  if(selectedBodyPart) {
-    selectedBodyPart.holdingOn=false;
-    selectedBodyPart.setZeroVelocity();
-    selectedBodyPart.x=game.input.activePointer.worldX/game.camera.scale.x;
-    selectedBodyPart.y=game.input.activePointer.worldY/game.camera.scale.y;
-  }
-
-  //fix each limb if holding on
-  climber.getSelectableBodyParts().forEach(bodyPart=>{
-    if (bodyPart.holdingOn){
-      bodyPart.setZeroVelocity();
-      bodyPart.x=bodyPart.staticPositionX;
-      bodyPart.y=bodyPart.staticPositionY;
+    var textY = 32;
+    for (var draggableLimb in cyberpunks.DraggableLimb) {
+      var force = climber.getForceOnDraggableLimb(draggableLimb);
+      game.debug.text('y force on ' + draggableLimb + ': ' + force);
+      textY += 16;
     }
-  })
+  }
 
-  // Send the hand/foot coordinates to the server.
-  if (selectedBodyPart) {
-    socket.emit('state', {
-      bodyPartName: selectedBodyPart.sprite.key,
-      x: selectedBodyPart.x,
-      y: selectedBodyPart.y
-    });
+  // Position the draggable limbs of the climber, based on whether they are
+  // being dragged, fixed to a hold, or fixed to another player's mouse.
+  var mouseCoordinates = getMouseCoordinates();
+  climber.positionDraggableLimbs(mouseCoordinates[0], mouseCoordinates[1]);
+
+  // Unfix limbs as appropriate.
+  climber.maybeUnfixLimbsBasedOnForce();
+
+  // Send the state to the server if necessary.
+  var msg = climber.getDraggedLimbMessage();
+  if (msg) {
+    socket.emit('state', msg);
   }
 }
 
-
-//motionState : number
-//The type of motion this body has. Should be one of: Body.STATIC (the body does not move), Body.DYNAMIC (body can move and respond to collisions) and Body.KINEMATIC (only moves according to its .velocity).
-//bodyPart.motionState = Phaser.Physics.P2.Body.DYNAMIC;
-//bodyPart.motionState = Phaser.Physics.P2.Body.KINEMATIC;
-
-
 function click(pointer) {
-//check if mouse clicks on a body part
-  let mousePosition = {
-    'x': game.input.activePointer.worldX/game.camera.scale.x,
-    'y': game.input.activePointer.worldY/game.camera.scale.y
-  };
-
-  var clickedBodyParts = game.physics.p2.hitTest(
-      mousePosition,
-      climber.getSelectableBodyParts());
-
-  if(clickedBodyParts.length) {
-    selectedBodyPart = clickedBodyParts[0].parent;
-  }
+  var mouseCoordinates = getMouseCoordinates();
+  climber.startDraggingAndUnfixLimbAt(mouseCoordinates[0], mouseCoordinates[1]);
 }
 
 function release() {
+  var mouseCoordinates = getMouseCoordinates();
 
-  if (!selectedBodyPart) return;
-
-  var holdingOnBodyPart=game.physics.p2.hitTest(
-    selectedBodyPart,
-    course.holdsArray);
-//if holding on, set fixed position
-  if (holdingOnBodyPart.length){
-    selectedBodyPart.holdingOn=true;
-    selectedBodyPart.staticPositionX=game.input.activePointer.worldX/game.camera.scale.x;
-    selectedBodyPart.staticPositionY=game.input.activePointer.worldY/game.camera.scale.y;
+  // If the mouse is released over a hold, fix the limbs being dragged to the
+  // current mouse position.
+  if (course.isHoldAt(mouseCoordinates[0], mouseCoordinates[1])) {
+    climber.fixDraggedLimbsTo(mouseCoordinates[0], mouseCoordinates[1]);
   }
 
-  selectedBodyPart = null;
+  // Finally, stop the dragging of all limbs.
+  climber.stopDraggingAllLimbs();
 }
 
-
-function move() {
-  if (!selectedBodyPart) return;
-
-//release limb if force is too great
-  if (climber.getForceOnBodyPart(selectedBodyPart)>1500){
-    selectedBodyPart = null;
-  }
+function getMouseCoordinates() {
+  return [
+    game.input.activePointer.worldX / game.camera.scale.x,
+    game.input.activePointer.worldY / game.camera.scale.y
+  ];
 }
