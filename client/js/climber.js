@@ -102,15 +102,8 @@ cyberpunks.Climber = function(game, size) {
     this.rightUpperArm_
   ];
 
-  // The fixed positions of the draggable limbs. If a limb is not present in the
-  // map, then the limb is not fixed and is subject to gravity. If a limb is
-  // being dragged, that will take precedence over this fixed position.
-  this.fixedLimbPositions_ = {};
 
-  // The draggable limbs being dragged. A limb being dragged will follow the
-  // mouse. Dragging takes precedence over a fixed position. The values of this
-  // map is not used.
-  this.draggedLimbs_ = {};
+  this.fixedLimbPositions_ = {};
 
   this.enablePhysics_();
   this.fixCamera_();
@@ -120,14 +113,26 @@ cyberpunks.Climber = function(game, size) {
  * Fixes the center of the given draggable limb to the given coordinates.
  * Fixing a limb makes it ignore gravity.
  */
-cyberpunks.Climber.prototype.fixLimbTo = function(draggableLimb, x, y) {
-  this.fixedLimbPositions_[draggableLimb] = [x, y];
+cyberpunks.Climber.prototype.fixLimbTo = function(draggableLimb, x, y,state) {
+  this.fixedLimbPositions_[draggableLimb]={x:x,y:y,state:state};
 };
 
-/** Fixes any limbs currently being dragged to the given coordinates. */
+/** Loosens any limbs currently being dragged. */
+cyberpunks.Climber.prototype.setDraggedLimbsLoose = function() {
+  for (var draggableLimb in this.fixedLimbPositions_) {
+    if (this.fixedLimbPositions_[draggableLimb].state == cyberpunks.LimbState.SELF_DRAGGING){
+      this.fixedLimbPositions_[draggableLimb] = {};
+      this.fixedLimbPositions_[draggableLimb].state = cyberpunks.LimbState.LOOSE;
+    }
+  }
+};
+
+/** Fixes any limbs that was released from dragging and is over a hold to the given coordinates. */
 cyberpunks.Climber.prototype.fixDraggedLimbsTo = function(x, y) {
-  for (var draggableLimb in this.draggedLimbs_) {
-    this.fixLimbTo(draggableLimb, x, y);
+  for (var draggableLimb in this.fixedLimbPositions_) {
+    if (this.fixedLimbPositions_[draggableLimb].state===cyberpunks.LimbState.SELF_DRAGGING){
+          this.fixLimbTo(draggableLimb, x, y,cyberpunks.LimbState.HOLDING);
+    }
   }
 };
 
@@ -160,14 +165,8 @@ cyberpunks.Climber.prototype.startDraggingAndUnfixLimbAt = function(
   }
 
   if (draggableLimb) {
-    delete this.fixedLimbPositions_[draggableLimb];
-    this.draggedLimbs_[draggableLimb] = true;
+    this.fixLimbTo(draggableLimb, mouseX, mouseY,cyberpunks.LimbState.SELF_DRAGGING);
   }
-};
-
-/** Stops dragging of all draggable limbs. */
-cyberpunks.Climber.prototype.stopDraggingAllLimbs = function() {
-  this.draggedLimbs_ = {};
 };
 
 /**
@@ -178,17 +177,19 @@ cyberpunks.Climber.prototype.stopDraggingAllLimbs = function() {
  *   - Otherwise, does nothing.
  */
 cyberpunks.Climber.prototype.positionDraggableLimbs = function(mouseX, mouseY) {
-  for (var draggableLimb in this.draggedLimbs_) {
-    var bodyPart = this.bodyPartForDraggableLimb_(draggableLimb);
-    this.moveBodyPartTo_(bodyPart, mouseX, mouseY, 0, 0);
-  }
+  
   for (var draggableLimb in this.fixedLimbPositions_) {
-    if (this.draggedLimbs_[draggableLimb]) {
-      continue;
+      var limb = this.fixedLimbPositions_[draggableLimb];
+      var bodyPart = this.bodyPartForDraggableLimb_(draggableLimb);
+    switch(limb.state){
+      case cyberpunks.LimbState.HOLDING:
+      case cyberpunks.LimbState.OTHER_DRAGGING:
+        this.moveBodyPartTo_(bodyPart,limb.x, limb.y, 0, 0);
+        break;
+      case cyberpunks.LimbState.SELF_DRAGGING:
+        this.moveBodyPartTo_(bodyPart, mouseX, mouseY, 0, 0);
+        break;
     }
-    var bodyPart = this.bodyPartForDraggableLimb_(draggableLimb);
-    var position = this.fixedLimbPositions_[draggableLimb];
-    this.moveBodyPartTo_(bodyPart, position[0], position[1], 0, 0);
   }
 };
 
@@ -198,12 +199,16 @@ cyberpunks.Climber.prototype.positionDraggableLimbs = function(mouseX, mouseY) {
  */
 cyberpunks.Climber.prototype.getDraggedLimbMessage = function() {
   var msg = [];
-  for (var draggableLimb in this.draggedLimbs_) {
-    var bodyPart = this.bodyPartForDraggableLimb_(draggableLimb);
+  for (var draggableLimb in this.fixedLimbPositions_) {
+    var bodyPart = this.fixedLimbPositions_[draggableLimb];
+    console.log(bodyPart.state)
+    if (bodyPart.state!=cyberpunks.LimbState.SELF_DRAGGING &&
+      bodyPart.state!=cyberpunks.LimbState.HOLDING) continue;
     msg.push({
       draggableLimb: draggableLimb,
-      x: bodyPart.body.x,
-      y: bodyPart.body.y
+      x: bodyPart.x,
+      y: bodyPart.y,
+      state: bodyPart.state
     });
   }
   return msg;
