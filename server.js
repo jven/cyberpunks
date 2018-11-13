@@ -11,6 +11,7 @@ app.use(express.static(path.join(__dirname, 'client')));
 io.on('connection', socket => {
   var myPlayerNumber = playerNumber;
   socket.on('state', msg => {
+    msg['originalPlayer'] = myPlayerNumber;
     socket.broadcast.emit('state', msg);
   });
   socket.on('disconnect', () => {

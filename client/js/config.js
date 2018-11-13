@@ -22,4 +22,4 @@ cyberpunks.Config.GAME_HEIGHT = 1920;
 
 // How far the camera is zoomed.
 // 1.0 is normal, 0.5 is more zoomed out, 2.0 is more zoomed in.
-cyberpunks.Config.CAMERA_SCALE = 1.0;
+cyberpunks.Config.CAMERA_SCALE = 0.75;

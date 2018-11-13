@@ -1,6 +1,8 @@
 # Cyberpunks climbing game
 This is a rock climbing browser game!
 
+See the latest version at 
+
 - Uses the [Phaser](https://phaser.io) HTML5/JS game engine.
 - Uses the [P2.js](https://schteppe.github.io/p2.js/) 2D physics engine.
 
