@@ -379,13 +379,13 @@ cyberpunks.Climber.prototype.enablePhysics_ = function() {
       [0, this.leftUpperLeg_.height / 2],
       this.leftLowerLeg_,
       [0, -this.leftLowerLeg_.height / 2])
-      .setLimits(-Math.PI / 8, Math.PI / 8);
+      .setLimits(-Math.PI / 2, 0);
   this.game_.physics.p2.createRevoluteConstraint(
       this.rightUpperLeg_,
       [0, this.rightUpperLeg_.height / 2],
       this.rightLowerLeg_,
       [0, -this.rightLowerLeg_.height / 2])
-      .setLimits(-Math.PI / 8, Math.PI / 8);
+      .setLimits(0, Math.PI / 2);
   this.game_.physics.p2.createRevoluteConstraint(
       this.leftLowerLeg_,
       [0, this.leftLowerLeg_.height / 2],
@@ -415,13 +415,13 @@ cyberpunks.Climber.prototype.enablePhysics_ = function() {
       [this.leftLowerArm_.width / 2, 0],
       this.leftUpperArm_,
       [-this.leftUpperArm_.width / 2, 0])
-      .setLimits(-Math.PI / 8, Math.PI / 8);
+      .setLimits(-Math.PI / 2, 0);
   this.game_.physics.p2.createRevoluteConstraint(
       this.rightLowerArm_,
       [-this.rightLowerArm_.width / 2, 0],
       this.rightUpperArm_,
       [this.rightUpperArm_.width / 2, 0])
-      .setLimits(-Math.PI / 8, Math.PI / 8);
+      .setLimits(0, Math.PI / 2);
   this.game_.physics.p2.createRevoluteConstraint(
       this.leftHand_,
       [this.leftHand_.width / 2, 0],
