@@ -44,7 +44,8 @@ function createFn() {
       30 /* holdSize */,
       180 /* holdSpacing */);
   climber = new cyberpunks.Climber(game, cyberpunks.Config.CLIMBER_SIZE);
-  climber.moveEntireBodyTo(100, 300);
+  climber.moveEntireBodyTo(
+      cyberpunks.Config.GAME_WIDTH / 2, cyberpunks.Config.GAME_HEIGHT - 300);
 
   // for collision groups to collide with the world borders
   game.physics.p2.updateBoundsCollisionGroup();
