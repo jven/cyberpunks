@@ -62,7 +62,7 @@ function createFn() {
     if (msg.draggableLimb &&
         typeof msg.x == "number" &&
         typeof msg.y == "number") {
-      climber.fixLimbTo(draggableLimb, msg.x, msg.y);
+      climber.fixLimbTo(draggableLimb, msg.x, msg.y,cyberpunks.LimbState.OTHER_DRAGGING);
     }
   });
 }
@@ -80,6 +80,7 @@ function updateFn() {
   // Position the draggable limbs of the climber, based on whether they are
   // being dragged, fixed to a hold, or fixed to another player's mouse.
   var mouseCoordinates = getMouseCoordinates();
+
   climber.positionDraggableLimbs(mouseCoordinates[0], mouseCoordinates[1]);
 
   // Unfix limbs as appropriate.
@@ -87,7 +88,10 @@ function updateFn() {
 
   // Send the state to the server if necessary.
   var msg = climber.getDraggedLimbMessage();
-  if (msg) {
+
+  if (msg.length) {
+    game.debug.text(JSON.stringify(msg),10,20);
+
     socket.emit('state', msg);
   }
 }
@@ -105,9 +109,10 @@ function release() {
   if (course.isHoldAt(mouseCoordinates[0], mouseCoordinates[1])) {
     climber.fixDraggedLimbsTo(mouseCoordinates[0], mouseCoordinates[1]);
   }
+  else{
+    climber.setDraggedLimbsLoose();
+  }
 
-  // Finally, stop the dragging of all limbs.
-  climber.stopDraggingAllLimbs();
 }
 
 function getMouseCoordinates() {
