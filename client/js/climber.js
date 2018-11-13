@@ -102,7 +102,6 @@ cyberpunks.Climber = function(game, size) {
     this.rightUpperArm_
   ];
 
-
   this.fixedLimbPositions_ = {};
 
   this.enablePhysics_();
@@ -117,21 +116,29 @@ cyberpunks.Climber.prototype.fixLimbTo = function(draggableLimb, x, y,state) {
   this.fixedLimbPositions_[draggableLimb]={x:x,y:y,state:state};
 };
 
-/** Loosens any limbs currently being dragged. */
-cyberpunks.Climber.prototype.setDraggedLimbsLoose = function() {
+/**
+ * Releases all limbs currently being dragged by the player.
+ * If the limb is released over a hold in the given course, it becomes fixed to
+ * its current position. Otherwise, it is set loose.
+ */
+cyberpunks.Climber.prototype.releaseDraggedLimbs = function(course) {
   for (var draggableLimb in this.fixedLimbPositions_) {
-    if (this.fixedLimbPositions_[draggableLimb].state == cyberpunks.LimbState.SELF_DRAGGING){
-      this.fixedLimbPositions_[draggableLimb] = {};
-      this.fixedLimbPositions_[draggableLimb].state = cyberpunks.LimbState.LOOSE;
+    if (this.fixedLimbPositions_[draggableLimb].state !=
+        cyberpunks.LimbState.SELF_DRAGGING) {
+      continue;
     }
-  }
-};
 
-/** Fixes any limbs that was released from dragging and is over a hold to the given coordinates. */
-cyberpunks.Climber.prototype.fixDraggedLimbsTo = function(x, y) {
-  for (var draggableLimb in this.fixedLimbPositions_) {
-    if (this.fixedLimbPositions_[draggableLimb].state===cyberpunks.LimbState.SELF_DRAGGING){
-          this.fixLimbTo(draggableLimb, x, y,cyberpunks.LimbState.HOLDING);
+    var bodyPart = this.bodyPartForDraggableLimb_(draggableLimb);
+    if (course.isHoldAt(bodyPart.body.x, bodyPart.body.y)) {
+      this.fixedLimbPositions_[draggableLimb] = {
+        state: cyberpunks.LimbState.HOLDING,
+        x: bodyPart.body.x,
+        y: bodyPart.body.y
+      };
+    } else {
+      this.fixedLimbPositions_[draggableLimb] = {
+        state: cyberpunks.LimbState.LOOSE
+      };
     }
   }
 };
@@ -204,7 +211,7 @@ cyberpunks.Climber.prototype.positionDraggableLimbs = function(mouseX, mouseY) {
     switch(limb.state){
       case cyberpunks.LimbState.HOLDING:
       case cyberpunks.LimbState.OTHER_DRAGGING:
-        this.moveBodyPartTo_(bodyPart,limb.x, limb.y, 0, 0);
+        this.moveBodyPartTo_(bodyPart, limb.x, limb.y, 0, 0);
         break;
       case cyberpunks.LimbState.SELF_DRAGGING:
         this.moveBodyPartTo_(bodyPart, mouseX, mouseY, 0, 0);
@@ -224,6 +231,12 @@ cyberpunks.Climber.prototype.getDraggedLimbMessage = function() {
 
     if (bodyPart.state!=cyberpunks.LimbState.SELF_DRAGGING &&
       bodyPart.state!=cyberpunks.LimbState.HOLDING) continue;
+
+    if (bodyPart.state != cyberpunks.LimbState.SELF_DRAGGING &&
+        bodyPart.state != cyberpunks.LimbState.HOLDING) {
+      continue;
+    }
+
     msg.push({
       draggableLimb: draggableLimb,
       x: bodyPart.x,
@@ -469,12 +482,12 @@ cyberpunks.Climber.prototype.fixCamera_ = function() {
 cyberpunks.Climber.prototype.moveBodyPartTo_ = function(
     bodyPart, anchorX, anchorY, offsetX, offsetY) {
   bodyPart.body.setZeroVelocity();
-  bodyPart.body.x = anchorX + offsetX - bodyPart.width / 2;
-  bodyPart.body.y = anchorY + offsetY - bodyPart.height / 2;
+  bodyPart.body.x = anchorX + offsetX;
+  bodyPart.body.y = anchorY + offsetY;
 };
 
 cyberpunks.Climber.prototype.createBodyPart_ = function(
-    bodyPartName, width, height, rotationDegrees) {
+    bodyPartName, width, height) {
   if (cyberpunks.Config.USE_SKELETON_SPRITE) {
     // Add the sprite off screen. It will be positioned on screen later.
     var skeletonSprite = this.game_.add.sprite(-10000, -10000, bodyPartName);
@@ -492,7 +505,7 @@ cyberpunks.Climber.prototype.createBodyPart_ = function(
   // Create a texture and sprite based on the graphic and add it to the game.
   var texture = graphics.generateTexture();
   this.game_.cache.addSpriteSheet(
-      name,
+      bodyPartName,
       null,
       texture.baseTexture.source,
       width,
@@ -502,7 +515,7 @@ cyberpunks.Climber.prototype.createBodyPart_ = function(
       0);
 
   // Add the sprite off screen. It will be positioned on screen later.
-  return this.game_.add.sprite(-10000, -10000, name);
+  return this.game_.add.sprite(-10000, -10000, bodyPartName);
 };
 
 cyberpunks.Climber.prototype.randomColor_ = function() {

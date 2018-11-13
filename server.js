@@ -18,4 +18,5 @@ io.on('connection', socket => {
   playerNumber += 1;
 });
 
-server.listen(5000, () => console.log('Listening on 5000.'));
+var port = process.env.PORT || 5000;
+server.listen(port, () => console.log('Listening on ' + port + '.'));
