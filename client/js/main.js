@@ -104,15 +104,7 @@ function click(pointer) {
 function release() {
   var mouseCoordinates = getMouseCoordinates();
 
-  // If the mouse is released over a hold, fix the limbs being dragged to the
-  // current mouse position.
-  if (course.isHoldAt(mouseCoordinates[0], mouseCoordinates[1])) {
-    climber.fixDraggedLimbsTo(mouseCoordinates[0], mouseCoordinates[1]);
-  }
-  else{
-    climber.setDraggedLimbsLoose();
-  }
-
+  climber.releaseDraggedLimbs(course);
 }
 
 function getMouseCoordinates() {

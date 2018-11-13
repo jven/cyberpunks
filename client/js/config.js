@@ -6,7 +6,7 @@ cyberpunks.Config = {};
 
 // Whether to render the body parts using skeleton sprites instead of
 // rectangles.
-cyberpunks.Config.USE_SKELETON_SPRITE = true;
+cyberpunks.Config.USE_SKELETON_SPRITE = false;
 
 // Whether to print on screen the forces acting on the hands/feet.
 cyberpunks.Config.SHOW_DEBUG_FORCES = false;
