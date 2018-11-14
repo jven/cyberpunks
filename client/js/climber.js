@@ -103,8 +103,8 @@ cyberpunks.Climber = function(game, collisionGroups, size) {
     this.rightUpperArm_
   ];
 
-  // A map from draggable limbs to the state of each limb.
-  this.draggableLimbState_ = {};
+  // A map from draggable limbs to the state and position of each limb.
+  this.draggableLimbProperties_ = {};
 
   // A graphics object holding debug indicators about the state of the climber.
   this.debugGraphics_ = this.game_.add.graphics(0, 0);
@@ -120,7 +120,7 @@ cyberpunks.Climber = function(game, collisionGroups, size) {
  */
 cyberpunks.Climber.prototype.dragLimbByOtherPlayer = function(
     draggableLimb, x, y) {
-  this.setState_(draggableLimb, x, y, cyberpunks.LimbState.OTHER_DRAGGING);
+  this.setLimbProperties_(draggableLimb, x, y, cyberpunks.LimbState.OTHER_DRAGGING);
 };
 
 /**
@@ -144,7 +144,7 @@ cyberpunks.Climber.prototype.dragLimbMyself = function(mouseX, mouseY) {
   }
 
   if (draggableLimb) {
-    this.setState_(
+    this.setLimbProperties_(
         draggableLimb, 
         mouseX,
         mouseY, 
@@ -157,70 +157,66 @@ cyberpunks.Climber.prototype.dragLimbMyself = function(mouseX, mouseY) {
  * state.
  */
 cyberpunks.Climber.prototype.positionLimbs = function(mouseX, mouseY) {
-  for (var draggableLimb in this.draggableLimbState_) {
-      var limb = this.draggableLimbState_[draggableLimb];
-      var bodyPart = this.bodyPartForDraggableLimb_(draggableLimb);
-    switch(limb.state) {
+
+  this.forEachDraggableLimb((limbProperties,bodyPart)=>{
+     switch(limbProperties.state) {
       case cyberpunks.LimbState.HOLDING:
       case cyberpunks.LimbState.OTHER_DRAGGING:
-        this.moveBodyPartTo_(bodyPart, limb.x, limb.y);
+        this.moveBodyPartTo_(bodyPart, limbProperties.x, limbProperties.y);
         break;
       case cyberpunks.LimbState.SELF_DRAGGING:
-        this.setState_(
-            draggableLimb, 
+        this.setLimbProperties_(
+            limbProperties.limb, 
             mouseX, mouseY,
             cyberpunks.LimbState.SELF_DRAGGING);
         this.moveBodyPartTo_(bodyPart, mouseX, mouseY);
         break;
     }
-  }
+  })
 };
 
 /** Releases all limbs currently being dragged by the player. */
 cyberpunks.Climber.prototype.releaseLimbs = function(course) {
-  for (var draggableLimb in this.draggableLimbState_) {
-    if (this.draggableLimbState_[draggableLimb].state !=
-        cyberpunks.LimbState.SELF_DRAGGING) {
-      continue;
+  this.forEachDraggableLimb((limbProperties,bodyPart)=>{
+    if (limbProperties.state !=cyberpunks.LimbState.SELF_DRAGGING) {
+      return;
     }
 
-    var bodyPart = this.bodyPartForDraggableLimb_(draggableLimb);
     if (cyberpunks.Climber.isBodyPartOnHold_(bodyPart, course)) {
-      this.setState_(
-          draggableLimb, 
+      this.setLimbProperties_(
+          limbProperties.limb, 
           bodyPart.body.x, 
           bodyPart.body.y, 
           cyberpunks.LimbState.HOLDING);
     } else {
       // The coordinates are not used for loose limbs.
-      this.setState_(draggableLimb, 0, 0, cyberpunks.LimbState.LOOSE);
+      this.setLimbProperties_(limbProperties.limb, 0, 0, cyberpunks.LimbState.LOOSE);
     }
-  }
+  })
 };
 
 /** Unfixes limbs based on the forces acting on them, as appropriate. */
 cyberpunks.Climber.prototype.maybeUnfixLimbsBasedOnForce = function() {
   var toUnfix = [];
 
-  for (var draggableLimb in this.draggableLimbState_) {
-    if (this.draggableLimbState_[draggableLimb].state ===
-        cyberpunks.LimbState.HOLDING
-        && this.getForceOnDraggableLimb_(draggableLimb) > 900) {
-      toUnfix.push(draggableLimb);
+  this.forEachDraggableLimb(limbProperties=>{
+    if (limbProperties.state === cyberpunks.LimbState.HOLDING
+        && this.getForceOnDraggableLimb_(limbProperties.limb) > 900) {
+      toUnfix.push(limbProperties.limb);
     }
-    if (this.draggableLimbState_[draggableLimb].state ===
-        cyberpunks.LimbState.SELF_DRAGGING) {
-      if (this.getForceOnDraggableLimb_(draggableLimb) > 1500) {
-        toUnfix.push(draggableLimb);
-      } else if (this.numberOfLimbsHoldingOn_() == 0 &&
-          this.getForceOnDraggableLimb_(draggableLimb) > 650) {
-        toUnfix.push(draggableLimb);
+    if (limbProperties.state === cyberpunks.LimbState.SELF_DRAGGING) {
+      if (this.getForceOnDraggableLimb_(limbProperties.limb) > 1500) {
+        toUnfix.push(limbProperties.limb);
+      } 
+      else if (this.numberOfLimbsHoldingOn_() == 0 &&
+          this.getForceOnDraggableLimb_(limbProperties.limb) > 650) {
+        toUnfix.push(limbProperties.limb);
       }
     }
-  }
+  })
 
   toUnfix.forEach(draggableLimb => {
-    delete this.draggableLimbState_[draggableLimb];
+    delete this.draggableLimbProperties_[draggableLimb];
   });
 };
 
@@ -230,20 +226,15 @@ cyberpunks.Climber.prototype.maybeUnfixLimbsBasedOnForce = function() {
  */
 cyberpunks.Climber.prototype.getDraggedLimbMessage = function() {
   var msg = [];
-  for (var draggableLimb in this.draggableLimbState_) {
-    var limbState = this.draggableLimbState_[draggableLimb];
-    if (limbState.state != cyberpunks.LimbState.SELF_DRAGGING &&
-        limbState.state != cyberpunks.LimbState.HOLDING) {
-      continue;
-    }
 
-    msg.push({
-      draggableLimb: draggableLimb,
-      x: limbState.x,
-      y: limbState.y,
-      state: limbState.state
-    });
-  }
+  this.forEachDraggableLimb(limbProperties=>{
+    if (limbProperties.state != cyberpunks.LimbState.SELF_DRAGGING &&
+        limbProperties.state != cyberpunks.LimbState.HOLDING) {
+      return;
+    }
+    msg.push(limbProperties);
+  })
+
   return msg;
 };
 
@@ -336,9 +327,8 @@ cyberpunks.Climber.prototype.moveEntireBodyTo = function(
 cyberpunks.Climber.prototype.showDebugGraphics = function() {
   this.debugGraphics_.clear();
 
-  for (var draggableLimbKey in cyberpunks.DraggableLimb) {
-    var draggableLimb = cyberpunks.DraggableLimb[draggableLimbKey];
-    var bodyPart = this.bodyPartForDraggableLimb_(draggableLimb);
+  this.forEachDraggableLimb((limbProperties,bodyPart)=>{
+    var limb = limbProperties.limb;
 
     // Show dots on the hit points of each limb.
     var hitPoints = cyberpunks.Climber.getHitPoints_(bodyPart);
@@ -349,24 +339,24 @@ cyberpunks.Climber.prototype.showDebugGraphics = function() {
     });
 
     // Show the force acting on each limb.
-    if (!this.debugForcesText_[draggableLimb]) {
-      this.debugForcesText_[draggableLimb] = this.game_.add.text(
+    if (!this.debugForcesText_[limb]) {
+      this.debugForcesText_[limb] = this.game_.add.text(
           0, 0, '', {
             font: "20px Arial",
             align: "center"
           });
     }
-    var force = Math.floor(this.getForceOnDraggableLimb_(draggableLimb));
+    var force = Math.floor(this.getForceOnDraggableLimb_(limb));
     var percentRed = Math.min(1, force / 1000);
     var color = ((Math.floor(percentRed * 150) + 100) << 16) +
         ((Math.floor((1 - percentRed) * 150) + 100) << 8);
-    this.debugForcesText_[draggableLimb].x = bodyPart.body.x;
-    this.debugForcesText_[draggableLimb].y = bodyPart.body.y;
-    this.debugForcesText_[draggableLimb].setText('' + force);
-    this.debugForcesText_[draggableLimb].fill = '#' + color.toString(16);
-    this.debugForcesText_[draggableLimb].stroke = 'black';
-    this.debugForcesText_[draggableLimb].strokeThickness = 3;
-  }
+    this.debugForcesText_[limb].x = bodyPart.body.x;
+    this.debugForcesText_[limb].y = bodyPart.body.y;
+    this.debugForcesText_[limb].setText('' + force);
+    this.debugForcesText_[limb].fill = '#' + color.toString(16);
+    this.debugForcesText_[limb].stroke = 'black';
+    this.debugForcesText_[limb].strokeThickness = 3;
+  })
 };
 
 cyberpunks.Climber.prototype.enablePhysics_ = function() {
@@ -527,8 +517,9 @@ cyberpunks.Climber.prototype.createBodyPart_ = function(
 };
 
 /** Sets the state of the given draggable limb. */
-cyberpunks.Climber.prototype.setState_ = function(draggableLimb, x, y, state) {
-  this.draggableLimbState_[draggableLimb] = {
+cyberpunks.Climber.prototype.setLimbProperties_ = function(draggableLimb, x, y, state) {
+  this.draggableLimbProperties_[draggableLimb] = {
+    limb:draggableLimb,
     state: state,
     x: x,
     y: y
@@ -540,8 +531,7 @@ cyberpunks.Climber.prototype.randomColor_ = function() {
   return (randomValue << 16) + (randomValue << 8) + randomValue;
 };
 
-cyberpunks.Climber.prototype.bodyPartForDraggableLimb_ = function(
-    draggableLimb) {
+cyberpunks.Climber.prototype.bodyPartForDraggableLimb_ = function(draggableLimb) {
   switch (draggableLimb) {
     case cyberpunks.DraggableLimb.LEFT_HAND:
       return this.leftHand_;
@@ -559,10 +549,9 @@ cyberpunks.Climber.prototype.bodyPartForDraggableLimb_ = function(
 
 cyberpunks.Climber.prototype.numberOfLimbsHoldingOn_ = function() {
   var counter = 0;
-  for (var draggableLimb in this.draggableLimbState_) {
-    counter += (this.draggableLimbState_[draggableLimb].state
-        === cyberpunks.LimbState.HOLDING);
-  }
+  this.forEachDraggableLimb(limbProperties=>{
+    counter += (limbProperties.state === cyberpunks.LimbState.HOLDING);
+  })
   return counter;
 }
 
@@ -610,4 +599,10 @@ cyberpunks.Climber.getHitPoints_ = function(bodyPart) {
       centerY + (point[1] - centerY) * cos + (point[0] - centerX) * sin
     ];
   });
+}
+
+cyberpunks.Climber.prototype.forEachDraggableLimb = function(callback) {
+  for (var draggableLimb in this.draggableLimbProperties_) {
+    callback(this.draggableLimbProperties_[draggableLimb],this.bodyPartForDraggableLimb_(draggableLimb));
+  }
 }
