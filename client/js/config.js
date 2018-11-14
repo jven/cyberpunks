@@ -8,8 +8,10 @@ cyberpunks.Config = {};
 // rectangles.
 cyberpunks.Config.USE_SKELETON_SPRITE = true;
 
-// Whether to print on screen the forces acting on the hands/feet.
+// Whether to show various debug info on screen.
 cyberpunks.Config.SHOW_DEBUG_FORCES = false;
+cyberpunks.Config.SHOW_DEBUG_MESSAGING = false;
+cyberpunks.Config.SHOW_DEBUG_CLIMBER_GRAPHICS = true;
 
 // The dimensions of the screen on the window.
 cyberpunks.Config.SCREEN_WIDTH = 1000;
@@ -38,3 +40,8 @@ cyberpunks.Config.CLIMBER_SIZE = 100;
 cyberpunks.Config.CLIMBER_COLLIDES_WITH_ITSELF = true;
 // Whether the climber should collide with holds.
 cyberpunks.Config.CLIMBER_COLLIDES_WITH_HOLDS = false;
+
+// The granularity of hit points for a climber's draggable limbs. These hit
+// points are used to test for overlap with holds when determining whether the
+// limb should be fixed to a hold on drag end.
+cyberpunks.Config.CLIMBER_HIT_POINT_GRANULARITY = 3;

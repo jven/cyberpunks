@@ -105,6 +105,8 @@ cyberpunks.Climber = function(game, collisionGroups, size) {
 
   this.fixedLimbPositions_ = {};
 
+  this.debugGraphics_ = this.game_.add.graphics(0, 0);
+
   this.enablePhysics_();
   this.fixCamera_();
 };
@@ -130,12 +132,12 @@ cyberpunks.Climber.prototype.releaseDraggedLimbs = function(course) {
     }
 
     var bodyPart = this.bodyPartForDraggableLimb_(draggableLimb);
-    if (course.doesP2BodyIntersectAnyHold(bodyPart.body)) {
+    if (cyberpunks.Climber.isBodyPartOnHold_(bodyPart, course)) {
       this.fixedLimbPositions_[draggableLimb] = {
         state: cyberpunks.LimbState.HOLDING,
         x: bodyPart.body.x,
         y: bodyPart.body.y
-      };
+      }
     } else {
       this.fixedLimbPositions_[draggableLimb] = {
         state: cyberpunks.LimbState.LOOSE
@@ -145,7 +147,7 @@ cyberpunks.Climber.prototype.releaseDraggedLimbs = function(course) {
 };
 
 
-cyberpunks.Climber.prototype.numberOflimbsHoldingOn = function() {
+cyberpunks.Climber.prototype.numberOfLimbsHoldingOn_ = function() {
   var counter=0;
   for (var draggableLimb in this.fixedLimbPositions_) {
     counter+= (this.fixedLimbPositions_[draggableLimb].state===cyberpunks.LimbState.HOLDING)
@@ -167,7 +169,7 @@ cyberpunks.Climber.prototype.maybeUnfixLimbsBasedOnForce = function() {
       if (this.getForceOnDraggableLimb(draggableLimb) > 1500){
         toUnfix.push(draggableLimb);
       }
-      else if(this.numberOflimbsHoldingOn()==0 && this.getForceOnDraggableLimb(draggableLimb) > 650){
+      else if(this.numberOfLimbsHoldingOn_()==0 && this.getForceOnDraggableLimb(draggableLimb) > 650){
         toUnfix.push(draggableLimb);
       }
     }
@@ -182,13 +184,17 @@ cyberpunks.Climber.prototype.maybeUnfixLimbsBasedOnForce = function() {
 cyberpunks.Climber.prototype.startDraggingAndUnfixLimbAt = function(
     mouseX, mouseY) {
   var draggableLimb = null;
-  if (this.isBodyPartAt_(this.leftHand_, mouseX, mouseY)) {
+  if (cyberpunks.Climber.isBodyPartAt_(
+      this.leftHand_, mouseX, mouseY)) {
     draggableLimb = cyberpunks.DraggableLimb.LEFT_HAND;
-  } else if (this.isBodyPartAt_(this.rightHand_, mouseX, mouseY)) {
+  } else if (cyberpunks.Climber.isBodyPartAt_(
+      this.rightHand_, mouseX, mouseY)) {
     draggableLimb = cyberpunks.DraggableLimb.RIGHT_HAND;
-  } else if (this.isBodyPartAt_(this.leftFoot_, mouseX, mouseY)) {
+  } else if (cyberpunks.Climber.isBodyPartAt_(
+      this.leftFoot_, mouseX, mouseY)) {
     draggableLimb = cyberpunks.DraggableLimb.LEFT_FOOT;
-  } else if (this.isBodyPartAt_(this.rightFoot_, mouseX, mouseY)) {
+  } else if (cyberpunks.Climber.isBodyPartAt_(
+      this.rightFoot_, mouseX, mouseY)) {
     draggableLimb = cyberpunks.DraggableLimb.RIGHT_FOOT;
   }
 
@@ -361,6 +367,20 @@ cyberpunks.Climber.prototype.moveEntireBodyTo = function(
       climberCenterY,
       this.upperBody_.width / 2 + this.rightUpperArm_.width / 2,
       -this.upperBody_.height / 2 + this.rightLowerArm_.height / 2);
+};
+
+cyberpunks.Climber.prototype.showDebugGraphics = function() {
+  this.debugGraphics_.clear();
+  for (var draggableLimb in cyberpunks.DraggableLimb) {
+    var bodyPart = this.bodyPartForDraggableLimb_(
+        cyberpunks.DraggableLimb[draggableLimb]);
+    var hitPoints = cyberpunks.Climber.getHitPoints_(bodyPart);
+    hitPoints.forEach(hitPoint => {
+      this.debugGraphics_.beginFill(0xff0000);
+      this.debugGraphics_.drawCircle(hitPoint[0], hitPoint[1], 5);
+      this.debugGraphics_.endFill();
+    });
+  }
 };
 
 cyberpunks.Climber.prototype.enablePhysics_ = function() {
@@ -544,8 +564,48 @@ cyberpunks.Climber.prototype.bodyPartForDraggableLimb_ = function(
   }
 };
 
-cyberpunks.Climber.prototype.isBodyPartAt_ = function(bodyPart, x, y) {
+cyberpunks.Climber.isBodyPartAt_ = function(bodyPart, x, y) {
   var mousePosition = {'x': x, 'y': y};
   var collision = game.physics.p2.hitTest(mousePosition, [bodyPart.body]);
   return !!collision.length;
 };
+
+cyberpunks.Climber.isBodyPartOnHold_ = function(bodyPart, course) {
+  var hitPoints = cyberpunks.Climber.getHitPoints_(bodyPart);
+  for (var i = 0; i < hitPoints.length; i++) {
+    var hitPoint = hitPoints[i];
+    if (course.isPointOnHold(hitPoint[0], hitPoint[1])) {
+      return true;
+    }
+  }
+  return false;
+};
+
+cyberpunks.Climber.getHitPoints_ = function(bodyPart) {
+  var granularity = cyberpunks.Config.CLIMBER_HIT_POINT_GRANULARITY;
+  var centerX = bodyPart.x;
+  var centerY = bodyPart.y;
+  var width = bodyPart.width;
+  var height = bodyPart.height;
+  var rotationRadians = bodyPart.rotation;
+
+  var dx = width / granularity;
+  var dy = height / granularity;
+  var testPoints = [];
+  for (var ix = 0; ix <= granularity; ix++) {
+    for (var iy = 0; iy <= granularity; iy++) {
+      testPoints.push([
+        centerX - width / 2 + ix * dx,
+        centerY - height / 2 + iy * dy
+      ]);
+    }
+  }
+  return testPoints.map(point => {
+    var sin = Math.sin(rotationRadians);
+    var cos = Math.cos(rotationRadians);
+    return [
+      centerX + (point[0] - centerX) * cos - (point[1] - centerY) * sin,
+      centerY + (point[1] - centerY) * cos + (point[0] - centerX) * sin
+    ];
+  });
+}

@@ -16,8 +16,9 @@ cyberpunks.Course.newBuilder = function(game, collisionGroups) {
   return new cyberpunks.CourseBuilder(game, collisionGroups);
 };
 
-cyberpunks.Course.prototype.doesP2BodyIntersectAnyHold = function(p2Body) {
-  var clickedHolds = this.game_.physics.p2.hitTest(p2Body, this.holds_);
+cyberpunks.Course.prototype.isPointOnHold = function(x, y) {
+  var clickedHolds = this.game_.physics.p2.hitTest(
+      {'x': x, 'y': y}, this.holds_);
   return !!clickedHolds.length;
 };
 

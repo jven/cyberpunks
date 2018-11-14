@@ -32,10 +32,11 @@ function createFn() {
   game.physics.p2.gravity.y = cyberpunks.Config.GRAVITY_Y;
 
   var collisionGroups = new cyberpunks.CollisionGroups(game);
-  course = cyberpunks.Course.newBuilder(game, collisionGroups)
-      .addRectangle(700, 1700, 20, 20, 0xff0000)
-      .addRectangle(600, 1700, 20, 20, 0xff0000)
-      .build();
+  course = cyberpunks.Courses.squareGrid(
+      game, collisionGroups,
+      0, 0,
+      cyberpunks.Config.GAME_WIDTH, cyberpunks.Config.GAME_HEIGHT,
+      60, 180);
   climber = new cyberpunks.Climber(
       game, collisionGroups, cyberpunks.Config.CLIMBER_SIZE);
   climber.moveEntireBodyTo(
@@ -78,6 +79,9 @@ function updateFn() {
       textY += 16;
     }
   }
+  if (cyberpunks.Config.SHOW_DEBUG_CLIMBER_GRAPHICS) {
+    climber.showDebugGraphics();
+  }
 
   // Position the draggable limbs of the climber, based on whether they are
   // being dragged, fixed to a hold, or fixed to another player's mouse.
@@ -90,11 +94,11 @@ function updateFn() {
 
   // Send the state to the server if necessary.
   var msg = climber.getDraggedLimbMessage();
-
   if (msg.length) {
-    game.debug.text(JSON.stringify(msg),10,20);
-
     socket.emit('state', msg);
+    if (cyberpunks.Config.SHOW_DEBUG_MESSAGING) {
+      game.debug.text(JSON.stringify(msg),10,20);
+    }
   }
 }
 
@@ -104,8 +108,6 @@ function click(pointer) {
 }
 
 function release() {
-  var mouseCoordinates = getMouseCoordinates();
-
   climber.releaseDraggedLimbs(course);
 }
 
