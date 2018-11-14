@@ -6,7 +6,7 @@ cyberpunks.Config = {};
 
 // Whether to render the body parts using skeleton sprites instead of
 // rectangles.
-cyberpunks.Config.USE_SKELETON_SPRITE = false;
+cyberpunks.Config.USE_SKELETON_SPRITE = true;
 
 // Whether to show various debug info on screen.
 cyberpunks.Config.SHOW_DEBUG_MESSAGING = true;
