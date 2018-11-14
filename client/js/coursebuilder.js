@@ -12,7 +12,8 @@ cyberpunks.CourseBuilder.prototype.addCircle = function(x, y, diameter, color) {
           y, 
           diameter /* width */, 
           diameter /* height */, 
-          color));
+          color,
+          ''));
   return this;
 };
 
@@ -25,7 +26,22 @@ cyberpunks.CourseBuilder.prototype.addRectangle = function(
           y, 
           width, 
           height, 
-          color));
+          color,
+          ''));
+  return this;
+};
+
+cyberpunks.CourseBuilder.prototype.addSprite = function(
+    x, y, width, height, spriteName) {
+  this.holdSpec_.push(
+      new cyberpunks.HoldSpec(
+          cyberpunks.HoldSpec.Shape.SPRITE, 
+          x, 
+          y, 
+          width, 
+          height, 
+          '',
+          spriteName));
   return this;
 };
 

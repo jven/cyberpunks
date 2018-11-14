@@ -16,15 +16,17 @@ var socketManager;
 
 function preloadFn() {
   game.load.image('background', 'bg.png');
+  game.load.image('wood', 'wood.jpg');
   
   cyberpunks.SpriteLoader.loadClimberSprites(game, 'skeleton');
+  cyberpunks.SpriteLoader.loadHoldSprites(game);
 };
 
 function createFn() {
   game.add.tileSprite(
       0, 0,
       cyberpunks.Config.GAME_WIDTH, cyberpunks.Config.GAME_HEIGHT,
-      'background');
+      'wood');
   game.world.setBounds(
       0, 0,
       cyberpunks.Config.GAME_WIDTH, cyberpunks.Config.GAME_HEIGHT);
@@ -33,7 +35,7 @@ function createFn() {
   game.physics.p2.gravity.y = cyberpunks.Config.GRAVITY_Y;
 
   var collisionGroups = new cyberpunks.CollisionGroups(game);
-  course = cyberpunks.Courses.squareGrid(
+  course = cyberpunks.Courses.randomSpriteGrid(
       game, collisionGroups,
       0, 0,
       cyberpunks.Config.GAME_WIDTH, cyberpunks.Config.GAME_HEIGHT,

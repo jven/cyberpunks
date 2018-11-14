@@ -23,6 +23,14 @@ cyberpunks.Course.prototype.isPointOnHold = function(x, y) {
 };
 
 cyberpunks.Course.prototype.createHold_ = function(i, holdSpec) {
+  if (holdSpec.shape == cyberpunks.HoldSpec.Shape.SPRITE) {
+    var sprite = this.game_.add.sprite(
+        holdSpec.x, holdSpec.y, holdSpec.spriteName);
+    sprite.width = holdSpec.width;
+    sprite.height = holdSpec.height;
+    return sprite;
+  }
+
   var graphics = this.game_.add.graphics(-10000, 10000);
 
   graphics.beginFill(holdSpec.color);

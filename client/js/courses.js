@@ -37,3 +37,20 @@ cyberpunks.Courses.squareGrid = function(
   }
   return builder.build();
 };
+
+cyberpunks.Courses.randomSpriteGrid = function(
+    game, 
+    collisionGroups,
+    minX, minY, 
+    maxX, maxY, 
+    holdSize, 
+    holdSpacing) {
+  var builder = cyberpunks.Course.newBuilder(game, collisionGroups);
+  for (var x = minX; x <= maxX; x += holdSpacing) {
+    for (var y = minY; y <= maxY; y += holdSpacing) {
+      var sprite = cyberpunks.SpriteLoader.getRandomHoldSpriteName_();
+      builder.addSprite(x, y, holdSize, holdSize, sprite);
+    }
+  }
+  return builder.build();
+};
