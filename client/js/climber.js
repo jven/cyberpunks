@@ -525,8 +525,8 @@ cyberpunks.Climber.prototype.createBodyPart_ = function(
 /** Sets the state of the given draggable limb, based on a server message. */
 cyberpunks.Climber.prototype.setStateFromServer = function(
     draggableLimb, x, y, state) {
-  if (this.draggableLimbState_[draggableLimb] &&
-      this.draggableLimbState_[draggableLimb].state ==
+  if (this.draggableLimbProperties_[draggableLimb] &&
+      this.draggableLimbProperties_[draggableLimb].state ==
       cyberpunks.LimbState.SELF_DRAGGING) {
     // If the player is currently dragging this limb, ignore the server.
     return;
@@ -535,7 +535,7 @@ cyberpunks.Climber.prototype.setStateFromServer = function(
   if (state == cyberpunks.LimbState.SELF_DRAGGING) {
     state = cyberpunks.LimbState.OTHER_DRAGGING;
   }
-  this.setState_(draggableLimb, x, y, state);
+  this.setLimbProperties_(draggableLimb, x, y, state);
 };
 
 /** Sets the state of the given draggable limb. */
