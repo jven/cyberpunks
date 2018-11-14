@@ -221,21 +221,27 @@ cyberpunks.Climber.prototype.maybeUnfixLimbsBasedOnForce = function() {
 };
 
 /**
- * Returns a message for the server indicating which body parts are being
- * dragged and where they are.
+ * Returns a list of reports for the server indicating the current state of the
+ * climber.
  */
-cyberpunks.Climber.prototype.getDraggedLimbMessage = function() {
-  var msg = [];
-
+cyberpunks.Climber.prototype.getReportsForServer = function() {
+  var reports = [];
   this.forEachDraggableLimb(limbProperties=>{
-    if (limbProperties.state != cyberpunks.LimbState.SELF_DRAGGING &&
-        limbProperties.state != cyberpunks.LimbState.HOLDING) {
+    if (limbProperties.state != cyberpunks.LimbState.LOOSE &&
+        limbProperties.state != cyberpunks.LimbState.HOLDING &&
+        limbProperties.state != cyberpunks.LimbState.SELF_DRAGGING) {
+      // The server only cares about these states.
       return;
     }
-    msg.push(limbProperties);
-  })
 
-  return msg;
+    reports.push({
+      limb: limbProperties.limb,
+      x: limbProperties.x,
+      y: limbProperties.y,
+      state: limbProperties.state
+    });
+  })
+  return reports;
 };
 
 cyberpunks.Climber.prototype.getForceOnDraggableLimb_ = function(
