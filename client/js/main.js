@@ -70,15 +70,6 @@ function createFn() {
 }
 
 function updateFn() {
-  if (cyberpunks.Config.SHOW_DEBUG_FORCES) {
-    var textY = 32;
-    for (var draggableLimb in cyberpunks.DraggableLimb) {
-      var force = climber.getForceOnDraggableLimb(
-          cyberpunks.DraggableLimb[draggableLimb]);
-      game.debug.text('y force on ' + draggableLimb + ': ' + force, 10, textY);
-      textY += 16;
-    }
-  }
   if (cyberpunks.Config.SHOW_DEBUG_CLIMBER_GRAPHICS) {
     climber.showDebugGraphics();
   }

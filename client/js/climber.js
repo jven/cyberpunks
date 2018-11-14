@@ -108,6 +108,7 @@ cyberpunks.Climber = function(game, collisionGroups, size) {
 
   // A graphics object holding debug indicators about the state of the climber.
   this.debugGraphics_ = this.game_.add.graphics(0, 0);
+  this.debugForcesText_ = {};
 
   this.enablePhysics_();
   this.fixCamera_();
@@ -181,7 +182,11 @@ cyberpunks.Climber.prototype.releaseLimbs = function(course) {
 
     var bodyPart = this.bodyPartForDraggableLimb_(draggableLimb);
     if (cyberpunks.Climber.isBodyPartOnHold_(bodyPart, course)) {
-      this.setState_(draggableLimb, x, y, cyberpunks.LimbState.HOLDING);
+      this.setState_(
+          draggableLimb, 
+          bodyPart.body.x, 
+          bodyPart.body.y, 
+          cyberpunks.LimbState.HOLDING);
     } else {
       // The coordinates are not used for loose limbs.
       this.setState_(draggableLimb, 0, 0, cyberpunks.LimbState.LOOSE);
@@ -196,15 +201,15 @@ cyberpunks.Climber.prototype.maybeUnfixLimbsBasedOnForce = function() {
   for (var draggableLimb in this.draggableLimbState_) {
     if (this.draggableLimbState_[draggableLimb].state ===
         cyberpunks.LimbState.HOLDING
-        && this.getForceOnDraggableLimb(draggableLimb) > 900) {
+        && this.getForceOnDraggableLimb_(draggableLimb) > 900) {
       toUnfix.push(draggableLimb);
     }
     if (this.draggableLimbState_[draggableLimb].state ===
         cyberpunks.LimbState.SELF_DRAGGING) {
-      if (this.getForceOnDraggableLimb(draggableLimb) > 1500) {
+      if (this.getForceOnDraggableLimb_(draggableLimb) > 1500) {
         toUnfix.push(draggableLimb);
       } else if (this.numberOfLimbsHoldingOn_() == 0 &&
-          this.getForceOnDraggableLimb(draggableLimb) > 650) {
+          this.getForceOnDraggableLimb_(draggableLimb) > 650) {
         toUnfix.push(draggableLimb);
       }
     }
@@ -242,7 +247,8 @@ cyberpunks.Climber.prototype.getDraggedLimbMessage = function() {
   return msg;
 };
 
-cyberpunks.Climber.prototype.getForceOnDraggableLimb = function(draggableLimb) {
+cyberpunks.Climber.prototype.getForceOnDraggableLimb_ = function(
+    draggableLimb) {
   var constraintNumber = 0;
   switch (draggableLimb) {
     case cyberpunks.DraggableLimb.LEFT_HAND:
@@ -359,15 +365,37 @@ cyberpunks.Climber.prototype.moveEntireBodyTo = function(
 
 cyberpunks.Climber.prototype.showDebugGraphics = function() {
   this.debugGraphics_.clear();
-  for (var draggableLimb in cyberpunks.DraggableLimb) {
-    var bodyPart = this.bodyPartForDraggableLimb_(
-        cyberpunks.DraggableLimb[draggableLimb]);
+
+  for (var draggableLimbKey in cyberpunks.DraggableLimb) {
+    var draggableLimb = cyberpunks.DraggableLimb[draggableLimbKey];
+    var bodyPart = this.bodyPartForDraggableLimb_(draggableLimb);
+
+    // Show dots on the hit points of each limb.
     var hitPoints = cyberpunks.Climber.getHitPoints_(bodyPart);
     hitPoints.forEach(hitPoint => {
-      this.debugGraphics_.beginFill(0xff0000);
+      this.debugGraphics_.beginFill(0xcccccc);
       this.debugGraphics_.drawCircle(hitPoint[0], hitPoint[1], 5);
       this.debugGraphics_.endFill();
     });
+
+    // Show the force acting on each limb.
+    if (!this.debugForcesText_[draggableLimb]) {
+      this.debugForcesText_[draggableLimb] = this.game_.add.text(
+          0, 0, '', {
+            font: "20px Arial",
+            align: "center"
+          });
+    }
+    var force = Math.floor(this.getForceOnDraggableLimb_(draggableLimb));
+    var percentRed = Math.min(1, force / 1000);
+    var color = ((Math.floor(percentRed * 150) + 100) << 16) +
+        ((Math.floor((1 - percentRed) * 150) + 100) << 8);
+    this.debugForcesText_[draggableLimb].x = bodyPart.body.x;
+    this.debugForcesText_[draggableLimb].y = bodyPart.body.y;
+    this.debugForcesText_[draggableLimb].setText('' + force);
+    this.debugForcesText_[draggableLimb].fill = '#' + color.toString(16);
+    this.debugForcesText_[draggableLimb].stroke = 'black';
+    this.debugForcesText_[draggableLimb].strokeThickness = 3;
   }
 };
 

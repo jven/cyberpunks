@@ -9,7 +9,6 @@ cyberpunks.Config = {};
 cyberpunks.Config.USE_SKELETON_SPRITE = true;
 
 // Whether to show various debug info on screen.
-cyberpunks.Config.SHOW_DEBUG_FORCES = true;
 cyberpunks.Config.SHOW_DEBUG_MESSAGING = false;
 cyberpunks.Config.SHOW_DEBUG_CLIMBER_GRAPHICS = true;
 
@@ -47,4 +46,4 @@ cyberpunks.Config.CLIMBER_COLLIDES_WITH_HOLDS = false;
 cyberpunks.Config.CLIMBER_HIT_POINT_GRANULARITY = 3;
 
 // Whether the climber releases holds based on the forces acting on each limb.
-cyberpunks.Config.CLIMBER_FALLS_BASED_ON_FORCES = true;
+cyberpunks.Config.CLIMBER_FALLS_BASED_ON_FORCES = false;
