@@ -90,7 +90,9 @@ function updateFn() {
   climber.positionDraggableLimbs(mouseCoordinates[0], mouseCoordinates[1]);
 
   // Unfix limbs as appropriate.
-  climber.maybeUnfixLimbsBasedOnForce();
+  if (cyberpunks.Config.CLIMBER_FALLS_BASED_ON_FORCES) {
+    climber.maybeUnfixLimbsBasedOnForce();
+  }
 
   // Send the state to the server if necessary.
   var msg = climber.getDraggedLimbMessage();

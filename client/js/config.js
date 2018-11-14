@@ -45,3 +45,6 @@ cyberpunks.Config.CLIMBER_COLLIDES_WITH_HOLDS = false;
 // points are used to test for overlap with holds when determining whether the
 // limb should be fixed to a hold on drag end.
 cyberpunks.Config.CLIMBER_HIT_POINT_GRANULARITY = 3;
+
+// Whether the climber releases holds based on the forces acting on each limb.
+cyberpunks.Config.CLIMBER_FALLS_BASED_ON_FORCES = true;
