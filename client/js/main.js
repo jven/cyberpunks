@@ -73,8 +73,9 @@ function updateFn() {
   if (cyberpunks.Config.SHOW_DEBUG_FORCES) {
     var textY = 32;
     for (var draggableLimb in cyberpunks.DraggableLimb) {
-      var force = climber.getForceOnDraggableLimb(draggableLimb);
-      game.debug.text('y force on ' + draggableLimb + ': ' + force);
+      var force = climber.getForceOnDraggableLimb(
+          cyberpunks.DraggableLimb[draggableLimb]);
+      game.debug.text('y force on ' + draggableLimb + ': ' + force, 10, textY);
       textY += 16;
     }
   }
@@ -105,7 +106,7 @@ function updateFn() {
 
 function click(pointer) {
   var mouseCoordinates = getMouseCoordinates();
-  climber.startDraggingAndUnfixLimbAt(mouseCoordinates[0], mouseCoordinates[1]);
+  climber.dragLimbMyself(mouseCoordinates[0], mouseCoordinates[1]);
 }
 
 function release() {
