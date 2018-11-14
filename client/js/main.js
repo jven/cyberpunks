@@ -56,8 +56,12 @@ function createFn() {
       (cyberpunks.Config.SCREEN_HEIGHT
           - 2 * cyberpunks.Config.CAMERA_DEADZONE_WIDTH));
 
+  // Register callback functions for mouse events.
   game.input.onDown.add(click, this);
   game.input.onUp.add(release, this);
+
+  // Prevent the game from pausing when the window loses focus.
+  game.stage.disableVisibilityChange = true;
 
   screenText = new cyberpunks.ScreenText(game);
   socketManager = new cyberpunks.SocketManager(socket, climber, screenText);

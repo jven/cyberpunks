@@ -23,6 +23,26 @@ class Climber {
     this.limbPositions_[limb].reportDragging(playerNumber, x, y);
   }
 
+  getLimbPositionsForClient() {
+    return [
+      this.getLimbPositionForClient_(Limb.LEFT_HAND),
+      this.getLimbPositionForClient_(Limb.RIGHT_HAND),
+      this.getLimbPositionForClient_(Limb.LEFT_FOOT),
+      this.getLimbPositionForClient_(Limb.RIGHT_FOOT)
+    ];
+  }
+
+  getLimbPositionForClient_(limb) {
+    var position = this.limbPositions_[limb];
+    return {
+      limb: limb,
+      state: position.state,
+      x: position.x,
+      y: position.y,
+      playerNumber: position.playerNumber
+    };
+  }
+
   getDebugDescription() {
     return "{\nLEFT_HAND: " +
       this.limbPositions_[Limb.LEFT_HAND].getDebugDescription() +

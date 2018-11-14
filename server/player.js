@@ -7,7 +7,16 @@ class Player {
 
   sendRosterMessage(allPlayerNumbers) {
     const otherPlayers = allPlayerNumbers.filter(n => n != this.playerNumber);
-    this.socket.emit('otherPlayers', otherPlayers);
+    this.socket.emit('roster', {
+      playerNumber: this.playerNumber,
+      otherPlayers: otherPlayers
+    });
+  }
+
+  sendLimbPositions(limbPositions) {
+    this.socket.emit('limbPositions', {
+      limbPositions: limbPositions
+    });
   }
 }
 

@@ -23,13 +23,13 @@ cyberpunks.ScreenText = function(game) {
   this.lastReportsText_.fixedToCamera = true;
 
   // Initialize all text.
-  this.updateOtherPlayersText([]);
+  this.updateRosterText('?', []);
   this.updateLastReportsText([]);
 };
 
-cyberpunks.ScreenText.prototype.updateOtherPlayersText = function(
-    otherPlayers) {
-  var newText = 'Other player numbers: ';
+cyberpunks.ScreenText.prototype.updateRosterText = function(
+    myPlayerNumber, otherPlayers) {
+  var newText = 'I\'m player ' + myPlayerNumber + '. Other players: ';
   if (!otherPlayers.length) {
     newText += ' none :(';
   } else {

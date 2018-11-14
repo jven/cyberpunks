@@ -147,7 +147,7 @@ cyberpunks.Climber.prototype.dragLimbMyself = function(mouseX, mouseY) {
     this.setState_(
         draggableLimb, 
         mouseX,
-        mouseY, 
+        mouseY,
         cyberpunks.LimbState.SELF_DRAGGING);
   }
 };
@@ -526,6 +526,22 @@ cyberpunks.Climber.prototype.createBodyPart_ = function(
 
   // Add the sprite off screen. It will be positioned on screen later.
   return this.game_.add.sprite(-10000, -10000, bodyPartName);
+};
+
+/** Sets the state of the given draggable limb, based on a server message. */
+cyberpunks.Climber.prototype.setStateFromServer = function(
+    draggableLimb, x, y, state) {
+  if (this.draggableLimbState_[draggableLimb] &&
+      this.draggableLimbState_[draggableLimb].state ==
+      cyberpunks.LimbState.SELF_DRAGGING) {
+    // If the player is currently dragging this limb, ignore the server.
+    return;
+  }
+  // Any drag state sent from the server is a drag from another player
+  if (state == cyberpunks.LimbState.SELF_DRAGGING) {
+    state = cyberpunks.LimbState.OTHER_DRAGGING;
+  }
+  this.setState_(draggableLimb, x, y, state);
 };
 
 /** Sets the state of the given draggable limb. */

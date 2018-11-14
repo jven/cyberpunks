@@ -9,7 +9,6 @@ class Game {
     this.nextPlayerNumber_ = 0;
     this.currentPlayers_ = {};
     this.climber_ = new Climber();
-    this.lastSeenTimestamp_ = 0;
   }
 
   addPlayer(socket) {
@@ -26,6 +25,11 @@ class Game {
   }
 
   onDisconnect(player) {
+    this.climber_.reportLooseLimb(player.playerNumber, Limb.LEFT_HAND);
+    this.climber_.reportLooseLimb(player.playerNumber, Limb.RIGHT_HAND);
+    this.climber_.reportLooseLimb(player.playerNumber, Limb.LEFT_FOOT);
+    this.climber_.reportLooseLimb(player.playerNumber, Limb.RIGHT_FOOT);
+
     // Remove the player from the roster.
     delete this.currentPlayers_[player.playerNumber];
 
@@ -33,12 +37,6 @@ class Game {
   }
 
   onReport(player, msg) {
-    var timestamp = msg.timestamp;
-    if (typeof timestamp != "number" || timestamp < this.lastSeenTimestamp_) {
-      // Ignore the message if there is no timestamp or if it is old.
-      return;
-    }
-    this.lastSeenTimestamp_ = timestamp;
     var reports = msg.reports;
     if (!reports || !reports.length) {
       // Ignore the message if there are no reports.
@@ -77,9 +75,15 @@ class Game {
     }
   }
 
+  sendLimbPositionsToAllPlayers() {
+    var limbPositions = this.climber_.getLimbPositionsForClient();
+    for (var playerNumber in this.currentPlayers_) {
+      this.currentPlayers_[playerNumber].sendLimbPositions(limbPositions);
+    }
+  }
+
   printGameStateToConsole() {
-    console.log('' + this.lastSeenTimestamp_ + ': ' +
-        this.climber_.getDebugDescription());
+    console.log(this.climber_.getDebugDescription());
   }
 }
 

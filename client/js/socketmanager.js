@@ -7,20 +7,18 @@ cyberpunks.SocketManager = function(socket, climber, screenText) {
   this.climber_ = climber;
   this.screenText_ = screenText;
 
-  this.timestamp_ = 0;
+  this.myPlayerNumber_ = -1;
 
   // Register callbacks for server messages.
-  socket.on('otherPlayers', this.onOtherPlayers_.bind(this));
+  socket.on('roster', this.onRoster_.bind(this));
+  socket.on('limbPositions', this.onLimbPositions_.bind(this));
 }
 
 /** Sends reports to the server indicating the state of the climber. */
 cyberpunks.SocketManager.prototype.sendClimberReports = function(reports) {
-  this.timestamp_++;
-
   var reports = this.climber_.getReportsForServer();
   if (reports.length) {
     this.socket_.emit('report', {
-      timestamp: this.timestamp_,
       reports: reports
     });
     if (cyberpunks.Config.SHOW_DEBUG_MESSAGING) {
@@ -29,7 +27,20 @@ cyberpunks.SocketManager.prototype.sendClimberReports = function(reports) {
   }
 };
 
-cyberpunks.SocketManager.prototype.onOtherPlayers_ = function(
-    otherPlayerNumbers) {
-  this.screenText_.updateOtherPlayersText(otherPlayerNumbers);
+cyberpunks.SocketManager.prototype.onRoster_ = function(msg) {
+  this.myPlayerNumber_ = msg.playerNumber;
+  this.screenText_.updateRosterText('' + msg.playerNumber, msg.otherPlayers);
+};
+
+cyberpunks.SocketManager.prototype.onLimbPositions_ = function(msg) {
+  var limbPositions = msg.limbPositions;
+  for (var i = 0; i < limbPositions.length; i++) {
+    var limbPosition = limbPositions[i];
+    if (limbPosition.playerNumber == this.myPlayerNumber_) {
+      // Ignore limb positions that were reported by this player.
+      continue;
+    }
+    this.climber_.setStateFromServer(
+        limbPosition.limb, limbPosition.x, limbPosition.y, limbPosition.state);
+  }
 };

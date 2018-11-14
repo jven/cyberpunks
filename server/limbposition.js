@@ -11,41 +11,38 @@ class LimbPosition {
   }
 
   reportLoose(playerNumber) {
-    if (this.state != LimbState.DRAGGING ||
-        playerNumber != this.playerNumber) {
+    if (this.state == LimbState.DRAGGING &&
+        playerNumber == this.playerNumber) {
       // Only the player currently dragging a limb can report a loose limb.
-      return;
+      this.state = LimbState.LOOSE;
+      this.x = 0;
+      this.y = 0;
+      this.playerNumber = -1;
     }
-
-    this.state = LimbState.LOOSE;
-    this.x = 0;
-    this.y = 0;
-    this.playerNumber = -1;
   }
 
   reportHolding(playerNumber, x, y) {
-    if (this.state != LimbState.DRAGGING ||
-        playerNumber != this.playerNumber) {
+    if (this.state == LimbState.DRAGGING &&
+        playerNumber == this.playerNumber) {
       // Only the player currently dragging a limb can report a holding limb.
-      return;
+      this.state = LimbState.HOLDING;
+      this.x = x;
+      this.y = y;
+      this.playerNumber = playerNumber;
     }
-
-    this.state = LimbState.HOLDING;
-    this.x = x;
-    this.y = y;
-    this.playerNumber = playerNumber;
   }
 
   reportDragging(playerNumber, x, y) {
-    if (this.state == LimbState.DRAGGING && playerNumber != this.playerNumber) {
-      // If a limb is being dragged, only the player dragging it can keep
-      // dragging it.
-      return;
+    if (this.state != LimbState.DRAGGING ||
+        playerNumber == this.playerNumber) {
+      // In order to drag a limb, one of the following must be true:
+      //  - The limb isn't already being dragged.
+      //  - The player is already dragging this limb.
+      this.state = LimbState.DRAGGING;
+      this.x = x;
+      this.y = y;
+      this.playerNumber = playerNumber;
     }
-    this.state = LimbState.DRAGGING;
-    this.x = x;
-    this.y = y;
-    this.playerNumber = playerNumber;
   }
 
   getDebugDescription() {
