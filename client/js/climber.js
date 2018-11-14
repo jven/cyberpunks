@@ -3,8 +3,9 @@
  * class is responsible for composing the climber from P2 bodies and positioning
  * these physics bodies during runtime.
  */
-cyberpunks.Climber = function(game, size) {
+cyberpunks.Climber = function(game, collisionGroups, size) {
   this.game_ = game;
+  this.collisionGroups_ = collisionGroups;
 
   var shoulderDistance = 0.5 * size;
   var upperArmWidth = 0.4 * size;
@@ -247,21 +248,6 @@ cyberpunks.Climber.prototype.getDraggedLimbMessage = function() {
   return msg;
 };
 
-cyberpunks.Climber.prototype.getCollidableBodyParts_ = function() {
-  return [
-    this.upperBody_,
-    this.lowerBody_,
-    this.leftUpperLeg_,
-    this.leftLowerLeg_,
-    this.rightUpperLeg_,
-    this.rightLowerLeg_,
-    this.leftLowerArm_,
-    this.leftUpperArm_,
-    this.rightLowerArm_,
-    this.rightUpperArm_
-  ];
-};
-
 cyberpunks.Climber.prototype.getForceOnDraggableLimb = function(draggableLimb) {
   var constraintNumber = 0;
   switch (draggableLimb) {
@@ -380,11 +366,29 @@ cyberpunks.Climber.prototype.moveEntireBodyTo = function(
 cyberpunks.Climber.prototype.enablePhysics_ = function() {
   this.game_.physics.p2.enable(this.bodyParts_, false);
 
-  let collidableBodyParts = this.getCollidableBodyParts_();
-
+  let collidableBodyParts = [
+    this.upperBody_,
+    this.lowerBody_,
+    this.leftUpperLeg_,
+    this.leftLowerLeg_,
+    this.rightUpperLeg_,
+    this.rightLowerLeg_,
+    this.leftLowerArm_,
+    this.leftUpperArm_,
+    this.rightLowerArm_,
+    this.rightUpperArm_
+  ];
+  var collisionFilter = [];
+  if (cyberpunks.Config.CLIMBER_COLLIDES_WITH_ITSELF) {
+    collisionFilter.push(this.collisionGroups_.getClimberGroup());
+  }
+  if (cyberpunks.Config.CLIMBER_COLLIDES_WITH_HOLDS) {
+    collisionFilter.push(this.collisionGroups_.getHoldsGroup());
+  }
   for (let i in collidableBodyParts) {
-    collidableBodyParts[i].body.setCollisionGroup(this.game_.climberCollisionGroup);
-    collidableBodyParts[i].body.collides([this.game_.courseCollisionGroup, this.game_.climberCollisionGroup]);
+    collidableBodyParts[i].body.setCollisionGroup(
+        this.collisionGroups_.getClimberGroup());
+    collidableBodyParts[i].body.collides(collisionFilter);
   }
 
   // Create the constraints between body parts.

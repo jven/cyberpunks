@@ -1,20 +1,19 @@
-cyberpunks.Course = function(game, holdSpecs) {
+cyberpunks.Course = function(game, collisionGroups, holdSpecs) {
   this.game_ = game;
   this.holds_ = [];
   for (var i = 0; i < holdSpecs.length; i++) {
     this.holds_.push(this.createHold_(i, holdSpecs[i]));
   }
-  this.game_.physics.p2.enable(this.holds_, false);
 
-  for (let i in this.holds_) {
-    this.holds_[i].body.static = true;
-    this.holds_[i].body.setCollisionGroup(this.game_.courseCollisionGroup);
-    this.holds_[i].body.collides([this.game_.climberCollisionGroup]);
-  }
+  this.game_.physics.p2.enable(this.holds_, false);
+  this.holds_.forEach(hold => {
+    hold.body.static = true;
+    hold.body.setCollisionGroup(collisionGroups.getHoldsGroup());
+  });
 };
 
-cyberpunks.Course.newBuilder = function(game) {
-  return new cyberpunks.CourseBuilder(game);
+cyberpunks.Course.newBuilder = function(game, collisionGroups) {
+  return new cyberpunks.CourseBuilder(game, collisionGroups);
 };
 
 cyberpunks.Course.prototype.doesP2BodyIntersectAnyHold = function(p2Body) {
@@ -44,7 +43,5 @@ cyberpunks.Course.prototype.createHold_ = function(i, holdSpec) {
       0,
       0);
 
-  var hold = this.game_.add.sprite(holdSpec.x, holdSpec.y, 'hold' + i);
-
-  return hold;
+  return this.game_.add.sprite(holdSpec.x, holdSpec.y, 'hold' + i);
 };

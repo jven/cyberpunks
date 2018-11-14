@@ -26,10 +26,15 @@ cyberpunks.Config.CAMERA_SCALE = 0.75;
 
 // The width of the camera's deadzone. If the climber is within this margin from
 // the edge of the camera, the camera will scroll.
-cyberpunks.Config.CAMERA_DEADZONE_WIDTH = 100;
+cyberpunks.Config.CAMERA_DEADZONE_WIDTH = 200;
 
 // The amount of gravity in the y-direction.
 cyberpunks.Config.GRAVITY_Y = 1000;
 
-// The size of the climber. A bigger number is a bigger size.
+// The size of the climber.
 cyberpunks.Config.CLIMBER_SIZE = 100;
+
+// Whether the climber should collide with its own body parts.
+cyberpunks.Config.CLIMBER_COLLIDES_WITH_ITSELF = true;
+// Whether the climber should collide with holds.
+cyberpunks.Config.CLIMBER_COLLIDES_WITH_HOLDS = false;

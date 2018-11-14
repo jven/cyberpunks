@@ -1,5 +1,6 @@
-cyberpunks.CourseBuilder = function(game) {
+cyberpunks.CourseBuilder = function(game, collisionGroups) {
   this.game_ = game;
+  this.collisionGroups_ = collisionGroups;
   this.holdSpec_ = [];
 };
 
@@ -12,6 +13,7 @@ cyberpunks.CourseBuilder.prototype.addCircle = function(x, y, diameter, color) {
           diameter /* width */, 
           diameter /* height */, 
           color));
+  return this;
 };
 
 cyberpunks.CourseBuilder.prototype.addRectangle = function(
@@ -24,8 +26,10 @@ cyberpunks.CourseBuilder.prototype.addRectangle = function(
           width, 
           height, 
           color));
+  return this;
 };
 
 cyberpunks.CourseBuilder.prototype.build = function() {
-  return new cyberpunks.Course(this.game_, this.holdSpec_);
+  return new cyberpunks.Course(
+      this.game_, this.collisionGroups_, this.holdSpec_);
 };

@@ -31,23 +31,17 @@ function createFn() {
   game.physics.startSystem(Phaser.Physics.P2JS);
   game.physics.p2.gravity.y = cyberpunks.Config.GRAVITY_Y;
 
-  // create collision groups
-  game.courseCollisionGroup = game.physics.p2.createCollisionGroup();
-  game.climberCollisionGroup = game.physics.p2.createCollisionGroup();
-
-  course = cyberpunks.Courses.squareGrid(
-      game,
-      0 /* minX */, 
-      0 /* minY */, 
-      cyberpunks.Config.GAME_WIDTH /* maxX */, 
-      cyberpunks.Config.GAME_HEIGHT /* maxY */,
-      30 /* holdSize */,
-      180 /* holdSpacing */);
-  climber = new cyberpunks.Climber(game, cyberpunks.Config.CLIMBER_SIZE);
+  var collisionGroups = new cyberpunks.CollisionGroups(game);
+  course = cyberpunks.Course.newBuilder(game, collisionGroups)
+      .addRectangle(700, 1700, 20, 20, 0xff0000)
+      .addRectangle(600, 1700, 20, 20, 0xff0000)
+      .build();
+  climber = new cyberpunks.Climber(
+      game, collisionGroups, cyberpunks.Config.CLIMBER_SIZE);
   climber.moveEntireBodyTo(
       cyberpunks.Config.GAME_WIDTH / 2, cyberpunks.Config.GAME_HEIGHT - 300);
 
-  // for collision groups to collide with the world borders
+  // For collision groups to collide with the world borders.
   game.physics.p2.updateBoundsCollisionGroup();
 
   game.camera.scale.x = cyberpunks.Config.CAMERA_SCALE;
