@@ -166,6 +166,10 @@ cyberpunks.Climber.prototype.positionLimbs = function(mouseX, mouseY) {
         this.moveBodyPartTo_(bodyPart, limb.x, limb.y, 0, 0);
         break;
       case cyberpunks.LimbState.SELF_DRAGGING:
+        this.setState_(
+            draggableLimb, 
+            mouseX, mouseY,
+            cyberpunks.LimbState.SELF_DRAGGING);
         this.moveBodyPartTo_(bodyPart, mouseX, mouseY, 0, 0);
         break;
     }
@@ -227,17 +231,17 @@ cyberpunks.Climber.prototype.maybeUnfixLimbsBasedOnForce = function() {
 cyberpunks.Climber.prototype.getDraggedLimbMessage = function() {
   var msg = [];
   for (var draggableLimb in this.draggableLimbState_) {
-    var bodyPart = this.draggableLimbState_[draggableLimb];
-    if (bodyPart.state != cyberpunks.LimbState.SELF_DRAGGING &&
-        bodyPart.state != cyberpunks.LimbState.HOLDING) {
+    var limbState = this.draggableLimbState_[draggableLimb];
+    if (limbState.state != cyberpunks.LimbState.SELF_DRAGGING &&
+        limbState.state != cyberpunks.LimbState.HOLDING) {
       continue;
     }
 
     msg.push({
       draggableLimb: draggableLimb,
-      x: bodyPart.x,
-      y: bodyPart.y,
-      state: bodyPart.state
+      x: limbState.x,
+      y: limbState.y,
+      state: limbState.state
     });
   }
   return msg;
