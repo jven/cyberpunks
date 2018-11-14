@@ -163,14 +163,14 @@ cyberpunks.Climber.prototype.positionLimbs = function(mouseX, mouseY) {
     switch(limb.state) {
       case cyberpunks.LimbState.HOLDING:
       case cyberpunks.LimbState.OTHER_DRAGGING:
-        this.moveBodyPartTo_(bodyPart, limb.x, limb.y, 0, 0);
+        this.moveBodyPartTo_(bodyPart, limb.x, limb.y);
         break;
       case cyberpunks.LimbState.SELF_DRAGGING:
         this.setState_(
             draggableLimb, 
             mouseX, mouseY,
             cyberpunks.LimbState.SELF_DRAGGING);
-        this.moveBodyPartTo_(bodyPart, mouseX, mouseY, 0, 0);
+        this.moveBodyPartTo_(bodyPart, mouseX, mouseY);
         break;
     }
   }
@@ -274,93 +274,63 @@ cyberpunks.Climber.prototype.moveEntireBodyTo = function(
   this.moveBodyPartTo_(
       this.upperBody_,
       climberCenterX,
-      climberCenterY,
-      0,
-      0);
+      climberCenterY);
   this.moveBodyPartTo_(
       this.lowerBody_,
       climberCenterX,
-      climberCenterY,
-      0,
-      this.upperBody_.height / 2 + this.lowerBody_.height / 2);
+      climberCenterY + this.upperBody_.height / 2 + this.lowerBody_.height / 2);
   this.moveBodyPartTo_(
       this.head_,
       climberCenterX,
-      climberCenterY,
-      0,
-      -this.upperBody_.height / 2 - this.head_.height / 2);
+      climberCenterY - this.upperBody_.height / 2 - this.head_.height / 2);
   this.moveBodyPartTo_(
       this.leftUpperLeg_,
-      climberCenterX,
-      climberCenterY,
-      -this.lowerBody_.width / 2,
-      this.upperBody_.height / 2 + this.lowerBody_.height + this.leftUpperLeg_.height / 2);
+      climberCenterX - this.lowerBody_.width / 2,
+      climberCenterY + this.upperBody_.height / 2 + this.lowerBody_.height + this.leftUpperLeg_.height / 2);
   this.moveBodyPartTo_(
       this.leftLowerLeg_,
-      climberCenterX,
-      climberCenterY,
-      -this.lowerBody_.width / 2,
-      this.upperBody_.height / 2 + this.lowerBody_.height + this.leftUpperLeg_.height + this.leftLowerLeg_.height / 2);
+      climberCenterX - this.lowerBody_.width / 2,
+      climberCenterY + this.upperBody_.height / 2 + this.lowerBody_.height + this.leftUpperLeg_.height + this.leftLowerLeg_.height / 2);
   this.moveBodyPartTo_(
       this.leftFoot_,
-      climberCenterX,
-      climberCenterY,
-      -this.lowerBody_.width / 2 + this.leftUpperLeg_.width / 2 - this.leftFoot_.width / 2,
-      this.upperBody_.height / 2 + this.lowerBody_.height + this.leftUpperLeg_.height + this.leftLowerLeg_.height + this.leftFoot_.height / 2);
+      climberCenterX - this.lowerBody_.width / 2 + this.leftUpperLeg_.width / 2 - this.leftFoot_.width / 2,
+      climberCenterY + this.upperBody_.height / 2 + this.lowerBody_.height + this.leftUpperLeg_.height + this.leftLowerLeg_.height + this.leftFoot_.height / 2);
   this.moveBodyPartTo_(
       this.rightUpperLeg_,
-      climberCenterX,
-      climberCenterY,
-      this.lowerBody_.width / 2,
-      this.upperBody_.height / 2 + this.lowerBody_.height + this.rightUpperLeg_.height / 2);
+      climberCenterX + this.lowerBody_.width / 2,
+      climberCenterY + this.upperBody_.height / 2 + this.lowerBody_.height + this.rightUpperLeg_.height / 2);
   this.moveBodyPartTo_(
       this.rightLowerLeg_,
-      climberCenterX,
-      climberCenterY,
-      this.lowerBody_.width / 2,
-      this.upperBody_.height / 2 + this.lowerBody_.height + this.rightUpperLeg_.height + this.rightLowerLeg_.height / 2);
+      climberCenterX + this.lowerBody_.width / 2,
+      climberCenterY + this.upperBody_.height / 2 + this.lowerBody_.height + this.rightUpperLeg_.height + this.rightLowerLeg_.height / 2);
   this.moveBodyPartTo_(
       this.rightFoot_,
-      climberCenterX,
-      climberCenterY,
-      this.lowerBody_.width / 2 - this.rightUpperLeg_.width / 2 + this.rightFoot_.width / 2,
-      this.upperBody_.height / 2 + this.lowerBody_.height + this.rightUpperLeg_.height + this.rightLowerLeg_.height + this.rightFoot_.height / 2);
+      climberCenterX + this.lowerBody_.width / 2 - this.rightUpperLeg_.width / 2 + this.rightFoot_.width / 2,
+      climberCenterY + this.upperBody_.height / 2 + this.lowerBody_.height + this.rightUpperLeg_.height + this.rightLowerLeg_.height + this.rightFoot_.height / 2);
   this.moveBodyPartTo_(
       this.leftHand_,
-      climberCenterX,
-      climberCenterY,
-      -this.upperBody_.width / 2 - this.leftUpperArm_.width - this.leftLowerArm_.width - this.leftHand_.width / 2,
-      -this.upperBody_.height / 2 + this.leftLowerArm_.height / 2);
+      climberCenterX - this.upperBody_.width / 2 - this.leftUpperArm_.width - this.leftLowerArm_.width - this.leftHand_.width / 2,
+      climberCenterY - this.upperBody_.height / 2 + this.leftLowerArm_.height / 2);
   this.moveBodyPartTo_(
       this.leftLowerArm_,
-      climberCenterX,
-      climberCenterY,
-      -this.upperBody_.width / 2 - this.leftUpperArm_.width - this.leftLowerArm_.width / 2,
-      -this.upperBody_.height / 2 + this.leftLowerArm_.height / 2);
+      climberCenterX - this.upperBody_.width / 2 - this.leftUpperArm_.width - this.leftLowerArm_.width / 2,
+      climberCenterY - this.upperBody_.height / 2 + this.leftLowerArm_.height / 2);
   this.moveBodyPartTo_(
       this.leftUpperArm_,
-      climberCenterX,
-      climberCenterY,
-      -this.upperBody_.width / 2 - this.leftUpperArm_.width / 2,
-      -this.upperBody_.height / 2 + this.leftLowerArm_.height / 2);
+      climberCenterX - this.upperBody_.width / 2 - this.leftUpperArm_.width / 2,
+      climberCenterY - this.upperBody_.height / 2 + this.leftLowerArm_.height / 2);
   this.moveBodyPartTo_(
       this.rightHand_,
-      climberCenterX,
-      climberCenterY,
-      this.upperBody_.width / 2 + this.rightUpperArm_.width + this.rightLowerArm_.width + this.rightHand_.width / 2,
-      -this.upperBody_.height / 2 + this.rightLowerArm_.height / 2);
+      climberCenterX + this.upperBody_.width / 2 + this.rightUpperArm_.width + this.rightLowerArm_.width + this.rightHand_.width / 2,
+      climberCenterY - this.upperBody_.height / 2 + this.rightLowerArm_.height / 2);
   this.moveBodyPartTo_(
       this.rightLowerArm_,
-      climberCenterX,
-      climberCenterY,
-      this.upperBody_.width / 2 + this.rightUpperArm_.width + this.rightLowerArm_.width / 2,
-      -this.upperBody_.height / 2 + this.rightLowerArm_.height / 2);
+      climberCenterX + this.upperBody_.width / 2 + this.rightUpperArm_.width + this.rightLowerArm_.width / 2,
+      climberCenterY - this.upperBody_.height / 2 + this.rightLowerArm_.height / 2);
   this.moveBodyPartTo_(
       this.rightUpperArm_,
-      climberCenterX,
-      climberCenterY,
-      this.upperBody_.width / 2 + this.rightUpperArm_.width / 2,
-      -this.upperBody_.height / 2 + this.rightLowerArm_.height / 2);
+      climberCenterX + this.upperBody_.width / 2 + this.rightUpperArm_.width / 2,
+      climberCenterY - this.upperBody_.height / 2 + this.rightLowerArm_.height / 2);
 };
 
 cyberpunks.Climber.prototype.showDebugGraphics = function() {
@@ -518,12 +488,10 @@ cyberpunks.Climber.prototype.fixCamera_ = function() {
   this.game_.camera.follow(this.upperBody_);
 };
 
-// TODO(justin): Replace anchorX and offsetX with just a single x param.
-cyberpunks.Climber.prototype.moveBodyPartTo_ = function(
-    bodyPart, anchorX, anchorY, offsetX, offsetY) {
+cyberpunks.Climber.prototype.moveBodyPartTo_ = function(bodyPart, x, y) {
   bodyPart.body.setZeroVelocity();
-  bodyPart.body.x = anchorX + offsetX;
-  bodyPart.body.y = anchorY + offsetY;
+  bodyPart.body.x = x;
+  bodyPart.body.y = y;
 };
 
 cyberpunks.Climber.prototype.createBodyPart_ = function(
