@@ -64,8 +64,7 @@ function createFn() {
     if (msg.draggableLimb &&
         typeof msg.x == "number" &&
         typeof msg.y == "number") {
-      climber.fixLimbTo(
-          draggableLimb, msg.x, msg.y,cyberpunks.LimbState.OTHER_DRAGGING);
+      climber.dragLimbByOtherPlayer(draggableLimb, msg.x, msg.y);
     }
   });
 }
@@ -87,7 +86,7 @@ function updateFn() {
   // being dragged, fixed to a hold, or fixed to another player's mouse.
   var mouseCoordinates = getMouseCoordinates();
 
-  climber.positionDraggableLimbs(mouseCoordinates[0], mouseCoordinates[1]);
+  climber.positionLimbs(mouseCoordinates[0], mouseCoordinates[1]);
 
   // Unfix limbs as appropriate.
   if (cyberpunks.Config.CLIMBER_FALLS_BASED_ON_FORCES) {
@@ -110,7 +109,7 @@ function click(pointer) {
 }
 
 function release() {
-  climber.releaseDraggedLimbs(course);
+  climber.releaseLimbs(course);
 }
 
 function getMouseCoordinates() {
