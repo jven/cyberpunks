@@ -1,5 +1,4 @@
 var socket = io();
-
 var game = new Phaser.Game(
     cyberpunks.Config.SCREEN_WIDTH,
     cyberpunks.Config.SCREEN_HEIGHT,
@@ -13,6 +12,7 @@ var game = new Phaser.Game(
 var climber;
 var course;
 var screenText;
+var socketManager;
 
 function preloadFn() {
   game.load.image('background', 'bg.png');
@@ -60,16 +60,7 @@ function createFn() {
   game.input.onUp.add(release, this);
 
   screenText = new cyberpunks.ScreenText(game);
-
-  // Listen for messages from the server.
-  socket.on('state', msg => {
-    if (msg.draggableLimb &&
-        typeof msg.x == "number" &&
-        typeof msg.y == "number") {
-      climber.dragLimbByOtherPlayer(draggableLimb, msg.x, msg.y);
-    }
-  });
-  socket.on('otherPlayers', msg => screenText.updateOtherPlayerText(msg));
+  socketManager = new cyberpunks.SocketManager(socket, climber, screenText);
 }
 
 function updateFn() {
@@ -88,14 +79,7 @@ function updateFn() {
     climber.maybeUnfixLimbsBasedOnForce();
   }
 
-  // Send the state to the server if necessary.
-  var msg = climber.getDraggedLimbMessage();
-  if (msg.length) {
-    socket.emit('state', msg);
-    if (cyberpunks.Config.SHOW_DEBUG_MESSAGING) {
-      screenText.updateLastStateMessageText(msg);
-    }
-  }
+  socketManager.sendClimberReports();
 }
 
 function click(pointer) {

@@ -3,17 +3,20 @@ const path = require('path');
 const app = express();
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
-const roster = require('./server/roster.js');
+const Game = require('./server/game.js').Game;
 
-const myRoster = new roster.Roster();
+const game = new Game();
 
 app.use(express.static(path.join(__dirname, 'client')));
 
-// When a new player connects, add them to the roster.
-io.on('connection', socket => myRoster.addPlayer(socket));
+// When a new player connects, add them to the game.
+io.on('connection', socket => game.addPlayer(socket));
 
 // Every second, send the current roster to all players.
-setInterval(myRoster.sendRosterToAllPlayers.bind(myRoster), 1000);
+setInterval(game.sendRosterToAllPlayers.bind(game), 1000);
+
+// Every second, print the state of the game to the console for debugging.
+setInterval(game.printGameStateToConsole.bind(game), 1000);
 
 const port = process.env.PORT || 5000;
 server.listen(port, () => console.log('Listening on ' + port + '.'));

@@ -17,17 +17,18 @@ cyberpunks.ScreenText = function(game) {
       10, cyberpunks.Config.SCREEN_HEIGHT - 30, '', style);
   this.otherPlayerText_.fixedToCamera = true;
 
-  // Text showing the last sent state message.
-  this.lastStateMessageText_ = game.add.text(
+  // Text showing the last reports sent to the server.
+  this.lastReportsText_ = game.add.text(
       10, cyberpunks.Config.SCREEN_HEIGHT - 60, '', style);
-  this.lastStateMessageText_.fixedToCamera = true;
+  this.lastReportsText_.fixedToCamera = true;
 
   // Initialize all text.
-  this.updateOtherPlayerText([]);
-  this.updateLastStateMessageText([]);
+  this.updateOtherPlayersText([]);
+  this.updateLastReportsText([]);
 };
 
-cyberpunks.ScreenText.prototype.updateOtherPlayerText = function(otherPlayers) {
+cyberpunks.ScreenText.prototype.updateOtherPlayersText = function(
+    otherPlayers) {
   var newText = 'Other player numbers: ';
   if (!otherPlayers.length) {
     newText += ' none :(';
@@ -42,6 +43,6 @@ cyberpunks.ScreenText.prototype.updateOtherPlayerText = function(otherPlayers) {
   this.otherPlayerText_.text = newText;
 };
 
-cyberpunks.ScreenText.prototype.updateLastStateMessageText = function(msg) {
-  this.lastStateMessageText_.text = JSON.stringify(msg);
+cyberpunks.ScreenText.prototype.updateLastReportsText = function(reports) {
+  this.lastReportsText_.text = JSON.stringify(reports);
 };
