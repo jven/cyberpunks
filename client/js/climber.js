@@ -228,10 +228,6 @@ cyberpunks.Climber.prototype.getDraggedLimbMessage = function() {
   var msg = [];
   for (var draggableLimb in this.draggableLimbState_) {
     var bodyPart = this.draggableLimbState_[draggableLimb];
-
-    if (bodyPart.state!=cyberpunks.LimbState.SELF_DRAGGING &&
-      bodyPart.state!=cyberpunks.LimbState.HOLDING) continue;
-
     if (bodyPart.state != cyberpunks.LimbState.SELF_DRAGGING &&
         bodyPart.state != cyberpunks.LimbState.HOLDING) {
       continue;
