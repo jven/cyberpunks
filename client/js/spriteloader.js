@@ -26,5 +26,5 @@ cyberpunks.SpriteLoader.loadClimberSprites = function(game, climberTheme) {
 cyberpunks.SpriteLoader.loadClimberBodyPart_ = function(
     game, climberTheme, bodyPart) {
   game.load.image(
-      bodyPart, 'sprites/' + climberTheme + '/' + bodyPart + '.png');
+      bodyPart, 'sprites/climber/' + climberTheme + '/' + bodyPart + '.png');
 };
