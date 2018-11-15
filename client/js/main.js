@@ -38,7 +38,7 @@ function createFn() {
       game, collisionGroups,
       0, 0,
       cyberpunks.Config.GAME_WIDTH, cyberpunks.Config.GAME_HEIGHT,
-      60, 180);
+      40, 100);
   climber = new cyberpunks.Climber(
       game, collisionGroups, cyberpunks.Config.CLIMBER_SIZE);
   climber.moveEntireBodyTo(
