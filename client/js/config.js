@@ -47,3 +47,6 @@ cyberpunks.Config.CLIMBER_HIT_POINT_GRANULARITY = 3;
 
 // Whether the climber releases holds based on the forces acting on each limb.
 cyberpunks.Config.CLIMBER_FALLS_BASED_ON_FORCES = false;
+
+// The height of the mat at the bottom of the game.
+cyberpunks.Config.MAT_HEIGHT = 30;

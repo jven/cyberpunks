@@ -16,6 +16,7 @@ var socketManager;
 
 function preloadFn() {
   game.load.image('background', 'img/backgrounds/gray.png');
+  game.load.image('mat', 'img/mat.png');
   
   cyberpunks.SpriteLoader.loadClimberSprites(game, 'skeleton');
   cyberpunks.SpriteLoader.loadHoldSprites(game);
@@ -24,7 +25,7 @@ function preloadFn() {
 function createFn() {
   game.add.tileSprite(
       0, 0,
-      cyberpunks.Config.GAME_WIDTH, cyberpunks.Config.GAME_HEIGHT,
+      2 * cyberpunks.Config.GAME_WIDTH, 2 * cyberpunks.Config.GAME_HEIGHT,
       'background');
   game.world.setBounds(
       0, 0,
@@ -32,8 +33,21 @@ function createFn() {
 
   game.physics.startSystem(Phaser.Physics.P2JS);
   game.physics.p2.gravity.y = cyberpunks.Config.GRAVITY_Y;
-
   var collisionGroups = new cyberpunks.CollisionGroups(game);
+  game.physics.p2.updateBoundsCollisionGroup();
+
+  // Create the mat at the bottom of the world.
+  var mat = game.add.sprite(
+      cyberpunks.Config.GAME_WIDTH / 2,
+      cyberpunks.Config.GAME_HEIGHT - cyberpunks.Config.MAT_HEIGHT / 2,
+      'mat');
+  mat.width = cyberpunks.Config.GAME_WIDTH;
+  mat.height = cyberpunks.Config.MAT_HEIGHT;
+  game.physics.p2.enable([mat], false);
+  mat.body.static = true;
+  mat.body.setCollisionGroup(collisionGroups.getMatGroup());
+  mat.body.collides([collisionGroups.getClimberGroup()]);
+
   course = cyberpunks.Courses.randomSpriteGrid(
       game, collisionGroups,
       50, 50,
@@ -44,15 +58,8 @@ function createFn() {
   climber.moveEntireBodyTo(
       cyberpunks.Config.GAME_WIDTH / 2, cyberpunks.Config.GAME_HEIGHT - 300);
 
-  // For collision groups to collide with the world borders.
-  game.physics.p2.updateBoundsCollisionGroup();
-
   game.camera.scale.x = cyberpunks.Config.CAMERA_SCALE;
   game.camera.scale.y = cyberpunks.Config.CAMERA_SCALE;
-  // game.camera.bounds = new Phaser.Rectangle(
-  //     0, 0,
-  //     cyberpunks.Config.GAME_WIDTH - cyberpunks.Config.SCREEN_WIDTH / 2,
-  //     cyberpunks.Config.GAME_HEIGHT - cyberpunks.Config.SCREEN_HEIGHT / 2);
   game.camera.deadzone = new Phaser.Rectangle(
       cyberpunks.Config.CAMERA_DEADZONE_WIDTH,
       cyberpunks.Config.CAMERA_DEADZONE_WIDTH, 

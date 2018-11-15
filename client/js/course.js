@@ -9,6 +9,9 @@ cyberpunks.Course = function(game, collisionGroups, holdSpecs) {
   this.holds_.forEach(hold => {
     hold.body.static = true;
     hold.body.setCollisionGroup(collisionGroups.getHoldsGroup());
+    if (cyberpunks.Config.CLIMBER_COLLIDES_WITH_HOLDS) {
+      hold.body.collides([collisionGroups.getClimberGroup()]);
+    }
   });
 };
 

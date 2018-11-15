@@ -367,7 +367,7 @@ cyberpunks.Climber.prototype.enablePhysics_ = function() {
     this.rightLowerArm_,
     this.rightUpperArm_
   ];
-  var collisionFilter = [];
+  var collisionFilter = [this.collisionGroups_.getMatGroup()];
   if (cyberpunks.Config.CLIMBER_COLLIDES_WITH_ITSELF) {
     collisionFilter.push(this.collisionGroups_.getClimberGroup());
   }

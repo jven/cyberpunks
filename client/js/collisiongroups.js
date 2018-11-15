@@ -6,6 +6,7 @@
 cyberpunks.CollisionGroups = function(game) {
   this.climberGroup_ = game.physics.p2.createCollisionGroup();
   this.holdsGroup_ = game.physics.p2.createCollisionGroup();
+  this.matGroup_ = game.physics.p2.createCollisionGroup();
 };
 
 cyberpunks.CollisionGroups.prototype.getClimberGroup = function() {
@@ -14,4 +15,8 @@ cyberpunks.CollisionGroups.prototype.getClimberGroup = function() {
 
 cyberpunks.CollisionGroups.prototype.getHoldsGroup = function() {
   return this.holdsGroup_;
+};
+
+cyberpunks.CollisionGroups.prototype.getMatGroup = function() {
+  return this.matGroup_;
 };
