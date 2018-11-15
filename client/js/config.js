@@ -9,7 +9,7 @@ cyberpunks.Config = {};
 cyberpunks.Config.USE_SKELETON_SPRITE = true;
 
 // Whether to show various debug info on screen.
-cyberpunks.Config.SHOW_DEBUG_MESSAGING = true;
+cyberpunks.Config.SHOW_DEBUG_MESSAGING = false;
 cyberpunks.Config.SHOW_DEBUG_CLIMBER_GRAPHICS = true;
 
 // The dimensions of the screen on the window.

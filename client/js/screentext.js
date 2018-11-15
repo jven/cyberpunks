@@ -29,6 +29,9 @@ cyberpunks.ScreenText = function(game) {
 
 cyberpunks.ScreenText.prototype.updateRosterText = function(
     myPlayerNumber, otherPlayers) {
+  if (!cyberpunks.Config.SHOW_DEBUG_MESSAGING) {
+    return;
+  }
   var newText = 'I\'m player ' + myPlayerNumber + '. Other players: ';
   if (!otherPlayers.length) {
     newText += ' none :(';
@@ -44,5 +47,8 @@ cyberpunks.ScreenText.prototype.updateRosterText = function(
 };
 
 cyberpunks.ScreenText.prototype.updateLastReportsText = function(reports) {
+  if (!cyberpunks.Config.SHOW_DEBUG_MESSAGING) {
+    return;
+  }
   this.lastReportsText_.text = JSON.stringify(reports);
 };

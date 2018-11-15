@@ -21,9 +21,7 @@ cyberpunks.SocketManager.prototype.sendClimberReports = function(reports) {
     this.socket_.emit('report', {
       reports: reports
     });
-    if (cyberpunks.Config.SHOW_DEBUG_MESSAGING) {
-      this.screenText_.updateLastReportsText(reports);
-    }
+    this.screenText_.updateLastReportsText(reports);
   }
 };
 
