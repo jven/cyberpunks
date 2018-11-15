@@ -20,7 +20,7 @@ var keys
 var spritelist=[];
 
 function preloadFn() {
-  game.load.image('background', 'img/backgrounds/grid.png');
+  game.load.image('background', 'img/backgrounds/gray.png');
   };
 
 function createFn() {

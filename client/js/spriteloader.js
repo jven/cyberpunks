@@ -63,7 +63,7 @@ cyberpunks.SpriteLoader.loadClimberBodyPart_ = function(
       'img/sprites/climber/' + climberTheme + '/' + bodyPart + '.png');
 };
 
-cyberpunks.SpriteLoader.getRandomHoldSpriteName_ = function() {
+cyberpunks.SpriteLoader.getRandomHoldSpriteName = function() {
   var holds = cyberpunks.SpriteLoader.HOLD_SPRITE_NAMES;
   return holds[Math.floor(Math.random() * holds.length)];
 }

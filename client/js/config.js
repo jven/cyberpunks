@@ -19,7 +19,7 @@ cyberpunks.Config.SCREEN_HEIGHT = 600;
 // The dimensions of the game world, possibly larger than what is shown on
 // screen.
 cyberpunks.Config.GAME_WIDTH = 1000;
-cyberpunks.Config.GAME_HEIGHT = 600;
+cyberpunks.Config.GAME_HEIGHT = 1000;
 
 // How far the camera is zoomed.
 // 1.0 is normal, 0.5 is more zoomed out, 2.0 is more zoomed in.
