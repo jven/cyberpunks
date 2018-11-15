@@ -15,8 +15,7 @@ var screenText;
 var socketManager;
 
 function preloadFn() {
-  game.load.image('background', 'bg.png');
-  game.load.image('wood', 'wood.jpg');
+  game.load.image('background', 'backgrounds/gray.png');
   
   cyberpunks.SpriteLoader.loadClimberSprites(game, 'skeleton');
   cyberpunks.SpriteLoader.loadHoldSprites(game);
@@ -26,7 +25,7 @@ function createFn() {
   game.add.tileSprite(
       0, 0,
       cyberpunks.Config.GAME_WIDTH, cyberpunks.Config.GAME_HEIGHT,
-      'wood');
+      'background');
   game.world.setBounds(
       0, 0,
       cyberpunks.Config.GAME_WIDTH, cyberpunks.Config.GAME_HEIGHT);
