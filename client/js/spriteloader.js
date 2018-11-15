@@ -14,7 +14,7 @@ cyberpunks.SpriteLoader.HOLD_SPRITE_NAMES = [
 cyberpunks.SpriteLoader.loadHoldSprites = function(game) {
   for (var i = 0; i < cyberpunks.SpriteLoader.HOLD_SPRITE_NAMES.length; i++) {
     var holdName = cyberpunks.SpriteLoader.HOLD_SPRITE_NAMES[i];
-    game.load.image(holdName, 'sprites/holds/' + holdName + '.png');
+    game.load.image(holdName, 'img/sprites/holds/' + holdName + '.png');
   }
 };
 
@@ -59,7 +59,8 @@ cyberpunks.SpriteLoader.loadClimberSprites = function(game, climberTheme) {
 cyberpunks.SpriteLoader.loadClimberBodyPart_ = function(
     game, climberTheme, bodyPart) {
   game.load.image(
-      bodyPart, 'sprites/climber/' + climberTheme + '/' + bodyPart + '.png');
+      bodyPart,
+      'img/sprites/climber/' + climberTheme + '/' + bodyPart + '.png');
 };
 
 cyberpunks.SpriteLoader.getRandomHoldSpriteName_ = function() {

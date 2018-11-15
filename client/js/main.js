@@ -15,7 +15,7 @@ var screenText;
 var socketManager;
 
 function preloadFn() {
-  game.load.image('background', 'backgrounds/gray.png');
+  game.load.image('background', 'img/backgrounds/gray.png');
   
   cyberpunks.SpriteLoader.loadClimberSprites(game, 'skeleton');
   cyberpunks.SpriteLoader.loadHoldSprites(game);
