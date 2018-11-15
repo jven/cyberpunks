@@ -36,9 +36,9 @@ function createFn() {
   var collisionGroups = new cyberpunks.CollisionGroups(game);
   course = cyberpunks.Courses.randomSpriteGrid(
       game, collisionGroups,
-      0, 0,
-      cyberpunks.Config.GAME_WIDTH, cyberpunks.Config.GAME_HEIGHT,
-      40, 100);
+      50, 50,
+      cyberpunks.Config.GAME_WIDTH - 50, cyberpunks.Config.GAME_HEIGHT - 100,
+      30, 80);
   climber = new cyberpunks.Climber(
       game, collisionGroups, cyberpunks.Config.CLIMBER_SIZE);
   climber.moveEntireBodyTo(
@@ -49,6 +49,10 @@ function createFn() {
 
   game.camera.scale.x = cyberpunks.Config.CAMERA_SCALE;
   game.camera.scale.y = cyberpunks.Config.CAMERA_SCALE;
+  // game.camera.bounds = new Phaser.Rectangle(
+  //     0, 0,
+  //     cyberpunks.Config.GAME_WIDTH - cyberpunks.Config.SCREEN_WIDTH / 2,
+  //     cyberpunks.Config.GAME_HEIGHT - cyberpunks.Config.SCREEN_HEIGHT / 2);
   game.camera.deadzone = new Phaser.Rectangle(
       cyberpunks.Config.CAMERA_DEADZONE_WIDTH,
       cyberpunks.Config.CAMERA_DEADZONE_WIDTH, 

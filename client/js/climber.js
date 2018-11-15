@@ -106,8 +106,6 @@ cyberpunks.Climber = function(game, collisionGroups, size) {
   // A map from draggable limbs to the state and position of each limb.
   this.draggableLimbProperties_ = {};
 
-  // A graphics object holding debug indicators about the state of the climber.
-  this.debugGraphics_ = this.game_.add.graphics(0, 0);
   this.debugForcesText_ = {};
 
   this.enablePhysics_();
@@ -331,19 +329,8 @@ cyberpunks.Climber.prototype.moveEntireBodyTo = function(
 };
 
 cyberpunks.Climber.prototype.showDebugGraphics = function() {
-  this.debugGraphics_.clear();
-
   this.forEachDraggableLimb((limbProperties,bodyPart)=>{
     var limb = limbProperties.limb;
-
-    // Show dots on the hit points of each limb.
-    var hitPoints = cyberpunks.Climber.getHitPoints_(bodyPart);
-    hitPoints.forEach(hitPoint => {
-      this.debugGraphics_.beginFill(0xcccccc);
-      this.debugGraphics_.drawCircle(hitPoint[0], hitPoint[1], 5);
-      this.debugGraphics_.endFill();
-    });
-
     // Show the force acting on each limb.
     if (!this.debugForcesText_[limb]) {
       this.debugForcesText_[limb] = this.game_.add.text(

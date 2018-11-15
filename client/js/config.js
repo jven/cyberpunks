@@ -18,12 +18,12 @@ cyberpunks.Config.SCREEN_HEIGHT = 600;
 
 // The dimensions of the game world, possibly larger than what is shown on
 // screen.
-cyberpunks.Config.GAME_WIDTH = 1920;
-cyberpunks.Config.GAME_HEIGHT = 1920;
+cyberpunks.Config.GAME_WIDTH = 1000;
+cyberpunks.Config.GAME_HEIGHT = 600;
 
 // How far the camera is zoomed.
 // 1.0 is normal, 0.5 is more zoomed out, 2.0 is more zoomed in.
-cyberpunks.Config.CAMERA_SCALE = 0.75;
+cyberpunks.Config.CAMERA_SCALE = 1.0;
 
 // The width of the camera's deadzone. If the climber is within this margin from
 // the edge of the camera, the camera will scroll.
@@ -33,7 +33,7 @@ cyberpunks.Config.CAMERA_DEADZONE_WIDTH = 200;
 cyberpunks.Config.GRAVITY_Y = 1000;
 
 // The size of the climber.
-cyberpunks.Config.CLIMBER_SIZE = 100;
+cyberpunks.Config.CLIMBER_SIZE = 80;
 
 // Whether the climber should collide with its own body parts.
 cyberpunks.Config.CLIMBER_COLLIDES_WITH_ITSELF = true;
