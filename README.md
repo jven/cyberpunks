@@ -1,4 +1,7 @@
 # Cyberpunks climbing game
+
+![screenshot](https://i.ibb.co/XFfNMQb/Screenshot.png)
+
 This is a rock climbing browser game!
 
 See the latest version at 
